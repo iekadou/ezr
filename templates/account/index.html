@@ -1,0 +1,44 @@
+{% lare_extends "account/__base.html" LARE_PREFIX ~ ".Account" "__lare.html" %}
+{% block content %}
+    <div id="content">
+        <h1 class="page-header">{% _"Dashboard" %}</h1>
+        <p>{% _"Here you can find a overview of your recent activities on {{ SITE_NAME }}." {'{{ SITE_NAME }}': SITE_NAME} %}</p>
+        <h2 class="sub-header">{% _"Shaders" %}</h2>
+        <div class="row">
+            <div class="placeholders">
+                <div class="col-xs-6 col-xs-offset-3 col-sm-3 col-sm-offset-0 col-lg-2 placeholder text-center">
+                    <div class="img-responsive avatar"><div class="initials">{{ Account.get_shaders|length }}</div></div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-vertical-aligned">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th class="text-center">{% _"Name" %}</th>
+                            <th class="text-center">{% _"Type" %}</th>
+                            <th class="text-center">{% _"Edit" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for shader in Account.get_shaders %}
+                            <tr>
+                                <td>{{ loop.revindex }}</td>
+                                <td class="text-center">{{ shader.get_name }}</td>
+                                <td class="text-center">{{ shader.get_type_display }}</td>
+                                <td class="text-center"><a href="{% url 'account:shader' shader.get_id %}"><span class="fa fa-edit fa-2x"></span></a></td>
+                            </tr>
+                        {% else %}
+                            <tr><td colspan="3" class="text-center">{% _"No shaders, yet!" %}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if Account.get_user.is_activated %}
+                <a href="{% url 'account:shader' %}">{% _"New shader, please." %}</a>
+            {% else %}
+                <a href="{% url 'account:activate' %}">{% _"Please activate your account, to create shaders." %}</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,18 @@
+{% lare_extends "__base.html" LARE_PREFIX "__lare.html" %}
+{% block page %}
+    <div id="page">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-3 col-md-2 sidebar">
+                    <ul class="nav nav-sidebar">
+                        <li{% if dashboard_active %} class="active"{% endif %}><a href="{% url 'account' %}">{% _"Dashboard" %}</a></li>
+                        <li{% if profile_active %} class="active"{% endif %}><a href="{% url 'account:profile' %}">{% _"Profile" %}</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    {% block content %}{% endblock content %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock page %}

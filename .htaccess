@@ -1,0 +1,53 @@
+RewriteEngine On
+
+# deny direct access to views
+RewriteCond %{REQUEST_URI} ^/views/.*$
+RewriteCond %{ENV:REDIRECT_STATUS} ^$
+RewriteRule (.*) / [R=404,L,NC]
+
+
+# for URLS_PY append ###namespace### in line
+#URLS_PY START#
+RewriteRule ^$ views/index.php [L] ###home###
+RewriteRule ^activate/([^/\.]+)/?$ views/activate.php?activation_key=$1 [L] ###activate####
+
+RewriteRule ^forgot-password/$ views/forgot_password.php [L] ###forgot_password###
+RewriteRule ^imprint/$ views/imprint.php [L] ###imprint###
+RewriteRule ^logout/$ views/logout.php [L] ###logout###
+RewriteRule ^login/$ views/login.php [L] ###login###
+RewriteRule ^register/$ views/register.php [L] ###register###
+RewriteRule ^migrate/$ views/migrate.php [L] ###migrate###
+RewriteRule ^shader/$ views/shader_select.php [L] ###shader###
+RewriteRule ^shader/([^/\.]+)/([^/\.]+)/$ views/shader.php?vertex_shader_id=$1&fragment_shader_id=$2 [L] ###shader###
+
+# backend urls
+RewriteRule ^account/$ views/account/index.php [L] ###account###
+RewriteRule ^account/activate/$ views/account/activate.php [L] ###account:activate###
+RewriteRule ^account/profile/$ views/account/profile.php [L] ###account:profile###
+RewriteRule ^account/shader/$ views/account/shader.php [L] ###account:shader###
+RewriteRule ^account/shader/([^/\.]+)/?$ views/account/shader.php?id=$1 [L] ###account:shader###
+
+# api urls
+RewriteRule ^api/login/$ api/login.php [L] ###api:login###
+RewriteRule ^api/profile/$ api/profile.php [L] ###api:profile###
+RewriteRule ^api/register/$ api/register.php [L] ###api:register###
+RewriteRule ^api/forgot-password/$ api/forgot_password.php [L] ###api:forgot_password###
+
+RewriteRule ^api/account/shader/$ api/account/shader.php [L] ###api:account:shader###
+RewriteRule ^api/account/activate/$ api/account/activate.php [L] ###api:account:activate###
+#URLS_PY END#
+
+# deny direct access to api
+RewriteCond %{REQUEST_URI} ^/api/.*$
+RewriteCond %{ENV:REDIRECT_STATUS} ^$
+RewriteRule (.*) / [R=404,L,NC]
+
+# restrictions
+RewriteRule ^classes/.*$ - [R=404,L,NC]
+RewriteRule ^config/.*$ - [R=404,L,NC]
+RewriteRule ^inc/.*$ - [R=404,L,NC]
+RewriteRule ^templates/.*$ - [R=404,L,NC]
+RewriteRule ^migrations/.*$ - [R=404,L,NC]
+RewriteRule ^vendor/.*$ - [R=404,L,NC]
+
+ErrorDocument 404 /views/_errors/404.php

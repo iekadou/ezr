@@ -1,0 +1,36 @@
+{% lare_extends "__base.html" LARE_PREFIX "__lare.html" %}
+{% block page %}
+<div id="page">
+    <div class="container text-center">
+        <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-4 col-lg-6 col-lg-offset-3">
+            <h1>{% _"Login" %}</h1>
+            <form class="navbar-form api-form" role="form" action="{% url 'api:login' %}" method="POST">
+                <fieldset>
+                    <input type="hidden" value="{{ referrer }}" name="referrer">
+                    <div class="form-group required clearfix">
+                        <div class="controls">
+                            <input id="id_navbar_identification" class="form-control" maxlength="64" name="identification" type="text" placeholder="{% _"email/username" %}">
+                        </div>
+                    </div>
+                    <div class="form-group required clearfix">
+                        <div class="controls">
+                            <input id="id_navbar_password" class="form-control" name="password" type="password" placeholder="{% _"password" %}">
+                        </div>
+                     </div>
+                    <br>
+                    <div class="form-group required clearfix">
+                        <div class="controls">
+                            <input id="remember_me" type="checkbox" name="remember_me" value="true">
+                            <label for="remember_me">{% _"remember me" %}</label>
+                        </div>
+                    </div>
+                </fieldset>
+                <a href="#" class="btn btn-primary btn-block btn-submit">{% _"Login" %}</a>
+            </form>
+            <hr>
+            <a href="{% url 'register' %}" class="btn btn-default btn-block">{% _"Register" %}</a>
+            <a href="{% url 'forgot_password' %}" class="btn btn-default btn-block">{% _"Forgot password" %}</a>
+        </div>
+    </div>
+</div>
+{% endblock page %}

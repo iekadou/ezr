@@ -1,0 +1,34 @@
+{% lare_extends "__base.html" LARE_PREFIX "__lare.html" %}
+{% block page %}
+    <div id="page">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-4 col-lg-6 col-lg-offset-3">
+                    <form class="form api-form" role="form" action="{% url 'api:register' %}" method="POST" enctype="multipart/form-data">
+                        <h2 class="page-header">{% _"Register" %}</h2>
+                        <p class="small">{% _"These data will not be visible in public." %}</p>
+                        <div class="form-group{% if error.username %} has-error{% endif %}">
+                            <label class="control-label" for="id_username">{% _"Username" %}:*</label>
+                            <input type="text" name="username" id="id_username" class="form-control" value="" placeholder="" required="" autofocus="">
+                        </div>
+                        <div class="form-group{% if error.email %} has-error{% endif %}">
+                            <label class="control-label" for="id_email">{% _"E-Mail" %}:*</label>
+                            <input type="email" name="email" id="id_email" class="form-control" value="" placeholder="" required="" autofocus="">
+                        </div>
+                        <div class="form-group{% if error.password %} has-error{% endif %}">
+                            <label class="control-label" for="id_password">{% _"Password" %}:*</label>
+                            <input type="password" name="password" id="id_password" class="form-control" value="" placeholder="" required="" autofocus="">
+                        </div>
+                        <div class="form-group{% if error.password %} has-error{% endif %}">
+                            <label class="control-label" for="id_password">{% _"Password again" %}:*</label>
+                            <input type="password" name="password_repeat" id="id_password_repeat" class="form-control" value="" placeholder="" required="" autofocus="">
+                        </div>
+                        <p class="small">* {% _"Those fields are required." %}</p>
+                        <br>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">{% _"Register" %}</button>
+                      </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock page %}

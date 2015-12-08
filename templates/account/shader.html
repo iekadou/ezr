@@ -1,0 +1,35 @@
+{% lare_extends "account/__base.html" LARE_PREFIX ~ ".Account" "__lare.html" %}
+{% block content %}
+{% if form_method == 'POST' and not Account.get_user.is_activated %}
+    <div id="content">
+        <a href="{% url 'account:activate' %}">{% _"Please activate your account, to create shaders." %}</a>
+    </div>
+{% else %}
+    <div id="content">
+        <form class="form api-form" role="form" action="{% url 'api:account:shader' %}" method="{{ form_method }}" enctype="multipart/form-data">
+            {% if form_method=='PUT' %}<input type="hidden" name="id" value="{{ Shader.get_id }}">{% endif %}
+            <h2 class="page-header form-signin-heading">{% if form_method == 'POST' %}{% _"Create a Shader" %}{% else %}{% _"Update your Shader" %}{% endif %}</h2>
+            <div class="row">
+                <div class="form-group col-xs-12" style="position: relative;">
+                    <label class="control-label" for="id_name">{% _"Name*" %}:</label><br>
+                    <input type="text" class="form-control" id="id_name" name="name" value="{{ Shader.get_name }}">
+                </div>
+                <div class="form-group col-xs-12" style="position: relative;">
+                    <label class="control-label" for="id_type">{% _"Type*" %}:</label><br>
+                    <select name="type" id="id_type">
+                        {% for key, value in ShaderTypes %}<option value="{{ key }}" {% if value == Shader.get_type %}selected{% endif %}>{{ key }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-xs-12" style="position: relative;">
+                    <label class="control-label" for="id_program">{% _"Program*" %}:</label><br>
+                    <textarea class="form-control" id="id_program" name="program" rows="20">{{ Shader.get_program }}</textarea>
+                </div>
+            </div>
+            <p class="small">* {% _"Those fields are required." %}</p>
+            <br>
+            <button class="btn btn-primary" type="submit">{% _"Save" %}</button>
+            <button class="btn btn-default" type="reset">{% _"Reset" %}</button>
+        </form>
+    </div>
+{% endif %}
+{% endblock content %}

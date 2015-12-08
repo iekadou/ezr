@@ -1,0 +1,13 @@
+{% lare_extends "account/__base.html" LARE_PREFIX ~ ".Account" "__lare.html" %}
+{% block content %}
+    <div id="content">
+        <h1 class="page-header">{% _"Activate" %}</h1>
+        <p>{% _"To activate your account click on the link in the activation mail." %}</p>
+        <p>{% _"To request a new activation mail click on the button below." %}</p>
+        <form class="form api-form" style="display: inline;" role="form" action="{% url 'api:account:activate' %}" method="POST" enctype="multipart/form-data">
+            <p>
+                <a href="#" class="btn btn-primary btn-submit">{% _"request new activation mail" %}</a>
+            </p>
+        </form>
+    </div>
+{% endblock content %}

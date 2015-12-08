@@ -1,0 +1,42 @@
+{% if Account.is_logged_in != true %}
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{% _"Login" %} <span class="caret"></span></a>
+    <ul class="dropdown-menu logged-out" role="menu">
+        <li>
+            <form class="navbar-form api-form" role="form" action="{% url 'api:login' %}" method="POST">
+                <fieldset>
+                <div class="form-group required clearfix">
+                        <div class="controls">
+                            <input id="id_navbar_identification" class="form-control" maxlength="64" name="identification" type="text" placeholder="{% _"email/username" %}">
+                        </div>
+                    </div>
+                    <div class="form-group required clearfix">
+                        <div class="controls">
+                            <input id="id_navbar_password" class="form-control" name="password" type="password" placeholder="{% _"password" %}">
+                        </div>
+                     </div>
+                    <div class="form-group required clearfix">
+                        <div class="controls">
+                            <input id="remember_me" type="checkbox" name="remember_me" value="true">
+                            <label for="remember_me">{% _"remember me" %}</label>
+                        </div>
+                    </div>
+                </fieldset>
+                <a href="#" class="btn btn-primary btn-block btn-submit">{% _"Login" %}</a>
+            </form>
+        </li>
+        <li class="divider"></li>
+        <li><a href="{% url 'register' %}" class="btn btn-default btn-block">{% _"Register" %}</a></li>
+        <li><a href="{% url 'forgot_password' %}" class="btn btn-default btn-block">{% _"Forgot password" %}</a></li>
+    </ul>
+</li>
+{% else %}
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ Account.get_user().get_username() }} <span class="caret"></span></a>
+    <ul class="dropdown-menu" role="menu">
+        <li{% if dashboard_active %} class="active"{% endif %}><a href="{% url 'account' %}" class="btn btn-default visible-xs">{% _"Dashboard" %}</a><a href="{% url 'account' %}" class="hidden-xs">{% _"Dashboard" %}</a></li>
+        <li{% if profile_active %} class="active"{% endif %}><a href="{% url 'account:profile' %}" class="btn btn-default visible-xs">{% _"Profile" %}</a><a href="{% url 'account:profile' %}" class="hidden-xs">{% _"Profile" %}</a></li>
+        <li><a href="{% url 'logout' %}" class="btn btn-default visible-xs">{% _"Logout" %}</a><a href="{% url 'logout' %}" class="hidden-xs">{% _"Logout" %}</a></li>
+    </ul>
+</li>
+{% endif %}

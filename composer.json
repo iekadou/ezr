@@ -1,0 +1,8 @@
+{
+    "require": {
+      "ircmaxell/password-compat": "dev-master",
+      "twig/twig": "~1.0",
+      "lare_team/twig_lare": ">=1.0.0",
+      "php": ">=5.3.3"
+    }
+}
