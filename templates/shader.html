@@ -7,13 +7,13 @@
                 <div class="col-xs-12">
                     <div class="form-group">
                         <label for="vertex">Vertex:</label>
-                        <textarea id="vertex" class="form-control">{{ VertexShader.get_program }}</textarea>
+                        <textarea id="vertex" class="form-control">{{ VertexShader.get_program|raw }}</textarea>
                     </div>
                 </div>
                 <div class="col-xs-12">
                     <div class="form-group">
                         <label for="fragment">Fragment:</label>
-                        <textarea id="fragment" class="form-control">{{ FragmentShader.get_program }}</textarea>
+                        <textarea id="fragment" class="form-control">{{ FragmentShader.get_program|raw }}</textarea>
                     </div>
                 </div>
                 <div class="col-xs-12">
@@ -40,10 +40,10 @@
     <div id="render_plane" style="height: 100%; position: absolute; width: 50%; right: 0; top:0"></div>
 
     <script id="fragment_shader" type="x-shader/x-fragment">
-        {{ FragmentShader.get_program }}
+        {{ FragmentShader.get_program|raw }}
     </script>
     <script id="vertex_shader" type="x-shader/x-vertex">
-        {{ VertexShader.get_program }}
+        {{ VertexShader.get_program|raw }}
     </script>
 
     <script>
