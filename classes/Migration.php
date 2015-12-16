@@ -18,17 +18,22 @@ class Migration {
     private function find_migrations() {
         $path = PATH."migrations/";
         $migrations = array();
+        $files = array();
         if ($handle = opendir($path)) {
             include(PATH."config/db.php");
             while (false !== ($file = readdir($handle))) {
                 if (!empty($file) && $file != '.' && $file != '..' && is_file($path.$file)) {
                     if (file_exists($path.$file)) {
-                        include($path.$file);
-                        if (isset($migration)) {
-                            array_push($migrations, $migration);
-                            unset($migration);
-                        }
+                        $files[] = $path.$file;
                     }
+                }
+            }
+            sort($files);
+            for($i=0; $i<sizeof($files); $i++) {
+                include($files[$i]);
+                if (isset($migration)) {
+                    array_push($migrations, $migration);
+                    unset($migration);
                 }
             }
             unset($DB_HOST);

@@ -1,7 +1,43 @@
 {% lare_extends "__base.html" LARE_PREFIX "__lare.html" %}
 {% block page %}
-<div id="page">
-    <div id="render_plane"></div>
+<div id="page" style="position: relative; height: 100%;">
+    <div id="editor_plane" style="height: 100%; position: absolute; width: 50%; left: 0; top:0">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="vertex">Vertex:</label>
+                        <textarea id="vertex" class="form-control">{{ VertexShader.get_program }}</textarea>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="fragment">Fragment:</label>
+                        <textarea id="fragment" class="form-control">{{ FragmentShader.get_program }}</textarea>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="init">Init method:</label>
+                        <textarea id="init" class="form-control">
+                            var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+                            uniforms = {
+                                time: { type: "f", value: 1.0 },
+                                resolution: { type: "v2", value: new THREE.Vector2() }
+                            };
+                            var material = new THREE.ShaderMaterial( {
+                                uniforms: uniforms,
+                                vertexShader: document.getElementById( 'vertex_shader' ).textContent,
+                                fragmentShader: document.getElementById( 'fragment_shader' ).textContent
+
+                            } );
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="render_plane" style="height: 100%; position: absolute; width: 50%; right: 0; top:0"></div>
 
     <script id="fragment_shader" type="x-shader/x-fragment">
         {{ FragmentShader.get_program }}
@@ -9,22 +45,6 @@
     <script id="vertex_shader" type="x-shader/x-vertex">
         {{ VertexShader.get_program }}
     </script>
-
-
-    <script id="vertexShader" type="x-shader/x-vertex">
-
-			varying vec2 vUv;
-            varying vec3 world_position;
-
-			void main()
-			{
-				vUv = uv;
-				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-				gl_Position = projectionMatrix * mvPosition;
-                world_position = position + 0.5;
-			}
-
-		</script>
 
     <script>
 
@@ -56,7 +76,6 @@
             };
 
 
-
             var material = new THREE.ShaderMaterial( {
 
                 uniforms: uniforms,
@@ -71,6 +90,7 @@
 
             renderer = new THREE.WebGLRenderer();
             renderer.setPixelRatio( window.devicePixelRatio );
+            renderer.setClearColor( 0x000000, 1);
             container.appendChild( renderer.domElement );
 
             onWindowResize();
@@ -81,13 +101,13 @@
 
         function onWindowResize( event ) {
 
-            uniforms.resolution.value.x = window.innerWidth;
+            uniforms.resolution.value.x = window.innerWidth/2;
             uniforms.resolution.value.y = window.innerHeight;
 
-            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.aspect = window.innerWidth/2 / window.innerHeight;
             camera.updateProjectionMatrix();
 
-            renderer.setSize( window.innerWidth, window.innerHeight );
+            renderer.setSize( window.innerWidth/2, window.innerHeight );
 
         }
 
