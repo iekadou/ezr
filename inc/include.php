@@ -1,6 +1,8 @@
 <?php
 namespace Iekadou\Webapp;
 
+error_reporting(E_ALL);
+
 $RENDERING_START = microtime(true);
 // get request method
 if (isset($_POST['_method']) && ($_POST['_method'] == 'GET' || $_POST['_method'] == 'POST' || $_POST['_method'] == 'PUT' || $_POST['_method'] == 'DELETE')) {
@@ -32,7 +34,10 @@ require_once(PATH."classes/View.php");
 require_once(PATH."classes/DBConnector.php");
 require_once(PATH."classes/BaseModel.php");
 require_once(PATH."classes/User.php");
+require_once(PATH."classes/Program.php");
 require_once(PATH."classes/Shader.php");
+require_once(PATH."classes/ShaderPass.php");
+require_once(PATH."classes/Snippet.php");
 require_once(PATH."classes/Files.php");
 require_once(PATH."classes/ValidationError.php");
 require_once(PATH."classes/Migration.php");

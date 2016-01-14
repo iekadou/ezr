@@ -13,31 +13,17 @@ try {
     if (!empty($errors)) {
         throw new ValidationError($errors);
     }
-
     switch (REQUEST_METHOD){
         case "PUT":
             $id = (isset($_POST['id']) ? htmlspecialchars($_POST['id']) : false);
-            $Shader = $Shader->get_by(array(array("id", "=", $id), array("userid", "=", Account::get_user_id())));
+            $Shader = $Shader->get_by(array(array("id", "=", $id)));
             try { $Shader = $Shader->interpret_request($_POST, $_FILES); } catch (ValidationError $e) { echo $e->stringify(); die(); }
             if ($Shader == false) {
                 raise404();
                 die();
             }
             if ($Shader->save()) {
-                echo '{"url": "'.UrlsPy::get_url('account').'"}';
-                die();
-            }
-            break;
-        case "POST":
-            if (Account::get_user()->is_activated() != true) {
-                raise404();
-                die();
-            }
-            $Shader = $Shader->set_userid(Account::get_user_id());
-            try { $Shader = $Shader->interpret_request($_POST, $_FILES); } catch (ValidationError $e) { echo $e->stringify(); die(); }
-
-            if ($Shader->create()) {
-                echo '{"url": "'.UrlsPy::get_url('account').'"}';
+                echo '{"success_msgs": [{"title": "'.Translation::translate('Saved!').'", "message": "'.Translation::translate('Saved successfully!').'"}]}';
                 die();
             }
             break;

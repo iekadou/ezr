@@ -17,8 +17,9 @@ RewriteRule ^logout/$ views/logout.php [L] ###logout###
 RewriteRule ^login/$ views/login.php [L] ###login###
 RewriteRule ^register/$ views/register.php [L] ###register###
 RewriteRule ^migrate/$ views/migrate.php [L] ###migrate###
-RewriteRule ^shader/$ views/shader_select.php [L] ###shader###
-RewriteRule ^shader/([^/\.]+)/([^/\.]+)/$ views/shader.php?vertex_shader_id=$1&fragment_shader_id=$2 [L] ###shader###
+RewriteRule ^shader/$ views/shader.php [L] ###shader###
+RewriteRule ^shader/([^/\.]+)/?$ views/shader.php?program_id=$1 [L] ###shader###
+RewriteRule ^shader/new/?$ views/shader.php?program_id=new [L] ###shader###
 
 # backend urls
 RewriteRule ^account/$ views/account/index.php [L] ###account###
@@ -34,6 +35,8 @@ RewriteRule ^api/register/$ api/register.php [L] ###api:register###
 RewriteRule ^api/forgot-password/$ api/forgot_password.php [L] ###api:forgot_password###
 
 RewriteRule ^api/account/shader/$ api/account/shader.php [L] ###api:account:shader###
+RewriteRule ^api/account/snippet/$ api/account/snippet.php [L] ###api:account:snippet###
+RewriteRule ^api/account/shaderpass/$ api/account/shaderpass.php [L] ###api:account:shaderpass###
 RewriteRule ^api/account/activate/$ api/account/activate.php [L] ###api:account:activate###
 #URLS_PY END#
 

@@ -50,7 +50,7 @@ h1, h2, h3, h4, h5, h6 {
 #site {
   min-height: 100%;
   margin: 0 auto -60px;
-  padding-bottom: 90px;
+  padding-bottom: 30px;
   position: relative;
 }
 .navbar-brand img {
@@ -58,8 +58,8 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: -12px;
 }
 #footer {
-  position: absolute;
-  bottom: 0;
+  position: relative;
+  top: 30px;
   z-index: 1001;
   width: 100%;
   height: 60px;
@@ -122,4 +122,8 @@ h1, h2, h3, h4, h5, h6 {
 
 #v {
     z-index: 1;
+}
+
+.ace_editor {
+    height: 200px;
 }
