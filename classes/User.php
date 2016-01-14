@@ -122,7 +122,7 @@ class User extends BaseModel
         $subject = Translation::translate('Your account at {{ SITE_NAME }}', array('{{ SITE_NAME }}' => SITE_NAME));
         $content = Translation::translate("Hey {{ username }},
 you can activate your account by clicking the following link:
-https://{{ DOMAIN }}{{ activate_url }}
+http://{{ DOMAIN }}{{ activate_url }}
 
 Have fun on {{ SITE_NAME }}", array('{{ username }}' => $this->get_username(), '{{ activation_key }}' => $this->get_activation_key(), '{{ SITE_NAME }}' => SITE_NAME, '{{ DOMAIN }}' => DOMAIN, '{{ activate_url }}' => UrlsPy::get_url('activate', array($this->get_activation_key(),))));
         $header = 'From: '.NO_REPLY_EMAIL;
