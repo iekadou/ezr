@@ -1,13 +1,13 @@
 
 <div class="well" style="background-color: #fff;">
     <a data-toggle="collapse" href="#shader_{{ shaderPass.get_shader.get_id }}_wrapper"><h4>{{ shaderPass.get_shader.get_name }}</h4></a>
-    <div class="form-group collapse shader" id="shader_{{ shaderPass.get_shader.get_id }}_wrapper">
+    <div class="form-group collapse ace-wrapper" id="shader_{{ shaderPass.get_shader.get_id }}_wrapper">
         <input type="text" class="form-control" name="name" value="{{ shaderPass.get_shader.get_name }}" style="background-color: rgb(39, 40, 34); color: #f7f7f7;">
         <label for="snippet_{{ shaderPass.get_shader.get_vertex_id }}">Vertex</label>
         <div id="snippet_{{ shaderPass.get_shader.get_vertex_id }}" class="form-control ace_editor vertex" data-mode="glsl">{{ shaderPass.get_shader.get_vertex.get_code|raw }}</div>
         <label for="snippet_{{ shaderPass.get_shader.get_fragment_id }}">Fragment</label>
         <div id="snippet_{{ shaderPass.get_shader.get_fragment_id }}" class="form-control ace_editor fragment" data-mode="glsl">{{ shaderPass.get_shader.get_fragment.get_code|raw }}</div>
-        <a href="#" class="btn btn-default save-shader" data-id="{{ shaderPass.get_shader.get_id }}">{% _"save" %}</a>
-        <a href="#" class="btn btn-default preview-shader">{% _"preview" %}</a>
+        <a href="#" class="btn btn-default save-shader save" data-id="{{ shaderPass.get_shader.get_id }}">{% _"save" %} (Ctrl-S)</a>
+        <a href="#" class="btn btn-default preview-shader preview">{% _"preview" %} (Ctrl-D)</a>
     </div>
 </div>

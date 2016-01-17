@@ -161,13 +161,13 @@ $(document).lareAlways(function() {
     });
     $('.preview-snippet').off('click').on('click', function(e) {
         e.preventDefault();
-        var $snippet = $(this).closest('.snippet');
+        var $snippet = $(this).closest('.ace-wrapper');
         snippets[$snippet.find('.snippet').attr('id').split("snippet_")[1]] = editors[$snippet.find('.snippet').attr('id')].getSession().getValue();
         init();
     });
     $('.save-snippet').off('click').on('click', function(e) {
         e.preventDefault();
-        var $snippet = $(this).closest('.snippet');
+        var $snippet = $(this).closest('.ace-wrapper');
         var data = new FormData();
         data.append('name', $snippet.find('[name="name"]').val());
         data.append('id', $(this).attr('data-id'));
@@ -202,14 +202,14 @@ $(document).lareAlways(function() {
     });
     $('.preview-shader').off('click').on('click', function(e) {
         e.preventDefault();
-        var $shader = $(this).closest('.shader');
+        var $shader = $(this).closest('.ace-wrapper');
         snippets[$shader.find('.vertex').attr('id').split("snippet_")[1]] = editors[$shader.find('.vertex').attr('id')].getSession().getValue();
         snippets[$shader.find('.fragment').attr('id').split("snippet_")[1]] = editors[$shader.find('.fragment').attr('id')].getSession().getValue();
         init();
     });
     $('.save-shader').off('click').on('click', function(e) {
         e.preventDefault();
-        var $shader = $(this).closest('.shader');
+        var $shader = $(this).closest('.ace-wrapper');
         var data = new FormData();
         data.append('name', $shader.find('[name="name"]').val());
         data.append('id', $(this).attr('data-id'));
@@ -243,6 +243,31 @@ $(document).lareAlways(function() {
             }
         });
     });
+
+    $('.shaderpasses').sortable();
+    $('.ace_editor').each(function() {
+        var $id = $(this).attr('id');
+        editors[$id] = ace.edit($(this).attr('id'));
+        editors[$id].setTheme("ace/theme/monokai");
+        editors[$id].commands.addCommand({
+            name: 'preview',
+            bindKey: {win: "Ctrl-D", mac: "Cmd-D"},
+            exec: function(editor) {
+                $(editor.container).closest('.ace-wrapper').find('.preview').click();
+            },
+            readOnly: true
+        });
+        editors[$id].commands.addCommand({
+            name: 'save',
+            bindKey: {win: "Ctrl-S", mac: "Cmd-S"},
+            exec: function(editor) {
+                $(editor.container).closest('.ace-wrapper').find('.save').click();
+            },
+            readOnly: true
+        });
+        editors[$(this).attr('id')].getSession().setMode("ace/mode/"+$(this).attr('data-mode'));
+    });
+
     Webapp.register_api_forms();
     if ($.support.lare) {
         $('a').not('[data-non-lare]').on('click', function(event) {
