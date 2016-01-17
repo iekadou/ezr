@@ -17,16 +17,12 @@ RewriteRule ^logout/$ views/logout.php [L] ###logout###
 RewriteRule ^login/$ views/login.php [L] ###login###
 RewriteRule ^register/$ views/register.php [L] ###register###
 RewriteRule ^migrate/$ views/migrate.php [L] ###migrate###
-RewriteRule ^shader/$ views/shader.php [L] ###shader###
-RewriteRule ^shader/([^/\.]+)/?$ views/shader.php?program_id=$1 [L] ###shader###
-RewriteRule ^shader/new/?$ views/shader.php?program_id=new [L] ###shader###
+RewriteRule ^program/([^/\.]+)/?$ views/program.php?program_id=$1 [L] ###program###
 
 # backend urls
 RewriteRule ^account/$ views/account/index.php [L] ###account###
 RewriteRule ^account/activate/$ views/account/activate.php [L] ###account:activate###
 RewriteRule ^account/profile/$ views/account/profile.php [L] ###account:profile###
-RewriteRule ^account/shader/$ views/account/shader.php [L] ###account:shader###
-RewriteRule ^account/shader/([^/\.]+)/?$ views/account/shader.php?id=$1 [L] ###account:shader###
 
 # api urls
 RewriteRule ^api/login/$ api/login.php [L] ###api:login###
@@ -34,6 +30,7 @@ RewriteRule ^api/profile/$ api/profile.php [L] ###api:profile###
 RewriteRule ^api/register/$ api/register.php [L] ###api:register###
 RewriteRule ^api/forgot-password/$ api/forgot_password.php [L] ###api:forgot_password###
 
+RewriteRule ^api/account/program/$ api/account/program.php [L] ###api:account:program###
 RewriteRule ^api/account/shader/$ api/account/shader.php [L] ###api:account:shader###
 RewriteRule ^api/account/snippet/$ api/account/snippet.php [L] ###api:account:snippet###
 RewriteRule ^api/account/shaderpass/$ api/account/shaderpass.php [L] ###api:account:shaderpass###

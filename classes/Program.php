@@ -90,8 +90,6 @@ class Program extends BaseModel
 
     public function interpret_request($POST, $FILES) {
         $this->set_name($POST['name']);
-        $this->set_init_id($POST['init_id']);
-        $this->set_render_id($POST['render_id']);
         if (!empty($this->errors)) {
             throw new ValidationError($this->errors);
         }

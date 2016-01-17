@@ -173,32 +173,7 @@ $(document).lareAlways(function() {
         data.append('id', $(this).attr('data-id'));
         data.append('code', editors[$snippet.find('.snippet').attr('id')].getSession().getValue());
         data.append('_method', "PUT");
-        $.ajax({
-            method: "POST",
-            url: '/api/account/snippet/',
-            data: data,
-            processData: false,
-            contentType: false,
-            dataType: 'json',
-            success: function (data, successCode, jqXHR) {
-                if (data.url !== undefined) {
-                    location.href = data.url;
-                } else {
-                    for (var field in data) {
-                        if (field == 'error_msgs') {
-                            for (var i = 0; i < data[field].length; i++) {
-                                toastr.error(data[field][i].message, data[field][i].title, Webapp.toastr_opts);
-                            }
-                        } else if (field == 'success_msgs') {
-                            for (var i = 0; i < data[field].length; i++) {
-                                toastr.success(data[field][i].message, data[field][i].title, Webapp.toastr_opts);
-                            }
-                        }
-                    }
-                }
-                init();
-            }
-        });
+        Webapp.api_post('/api/account/snippet/', data);
     });
     $('.preview-shader').off('click').on('click', function(e) {
         e.preventDefault();
@@ -216,9 +191,22 @@ $(document).lareAlways(function() {
         data.append('vertex_code', editors[$shader.find('.vertex').attr('id')].getSession().getValue());
         data.append('fragment_code', editors[$shader.find('.fragment').attr('id')].getSession().getValue());
         data.append('_method', "PUT");
+        Webapp.api_post('/api/account/shader/', data);
+    });
+    $('.save-program').off('click').on('click', function(e) {
+        e.preventDefault();
+        var $shader = $(this).closest('.ace-wrapper');
+        var data = new FormData();
+        data.append('name', $shader.find('[name="name"]').val());
+        data.append('id', $(this).attr('data-id'));
+        data.append('_method', "PUT");
+        Webapp.api_post('/api/account/program/', data);
+    });
+
+    Webapp.api_post = function(url, data) {
         $.ajax({
             method: "POST",
-            url: '/api/account/shader/',
+            url: url,
             data: data,
             processData: false,
             contentType: false,
@@ -242,7 +230,7 @@ $(document).lareAlways(function() {
                 init();
             }
         });
-    });
+    };
 
     $('.shaderpasses').sortable();
     $('.ace_editor').each(function() {
@@ -275,4 +263,14 @@ $(document).lareAlways(function() {
         });
     }
     Webapp.closeNavbar();
+    $(document).keydown(function(event) {
+        // If Control or Command key is pressed and the S key is pressed
+        // run save function. 83 is the key code for S.
+        if((event.ctrlKey || event.metaKey) && event.which == 83) {
+            // Save Function
+            event.preventDefault();
+            $(event.target).closest('.ace-wrapper').find('.save').click();
+            return false;
+        }
+    });
 });

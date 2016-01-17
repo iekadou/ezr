@@ -3,6 +3,11 @@
 <div id="page" style="position: relative; height: 100%;">
     <div id="editor_plane" style="height: 100%; position: relative; width: 50%; left: 0; top:0">
         <br>
+        <div class="form-group ace-wrapper" id="program_{{ Program.get_id }}_wrapper">
+            <input type="text" class="form-control" name="name" value="{{ Program.get_name }}" style="background-color: rgb(39, 40, 34); color: #f7f7f7;">
+            <a href="#" class="btn btn-default save-program save" data-id="{{ Program.get_id }}">{% _"save" %} (Ctrl-S)</a>
+        </div>
+        <br>
         <div class="container-fluid">
             <div class="row">
                 <div class="col-xs-12">

@@ -79,11 +79,11 @@ class Account
     }
 
 
-    public static function get_shaders()
+    public static function get_programs()
     {
-        $Shader = new Shader();
-        $shaders = $Shader->filter_by(array(array("userid", "=", Account::get_user_id())), array(array("id", "DESC")));
-        return $shaders;
+        $Program = new Program();
+        $programs = $Program->filter_by(array(array("userid", "=", Account::get_user_id())), array(array("id", "DESC")));
+        return $programs;
     }
 
     public static function generate_remember_token($userid) {
