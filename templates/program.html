@@ -80,9 +80,10 @@
     <script>
         var container;
 
-        var camera, scene, renderer;
+        var camera, scene, renderer, composer;
 
-        var uniforms;
+        var uniforms = {};
+        var material;
 
         var clock = new THREE.Clock();
 
@@ -104,7 +105,8 @@
             /* START PROGRAM INIT PART */
             eval(snippets[{{ Program.get_init.get_id }}]);
             /* END PROGRAM INIT PART */
-            var material;
+            uniforms.resolution = { type: "v2", value: new THREE.Vector2() };
+            uniforms.time = { type: "f", value: 1.0 };
             material = new THREE.ShaderMaterial( {
                 uniforms: uniforms,
                 vertexShader: snippets[{{ Program.get_material.get_vertex.get_id }}],/* vertex_shader */
@@ -128,12 +130,20 @@
             renderer = new THREE.WebGLRenderer();
             renderer.setPixelRatio( window.devicePixelRatio );
             renderer.setClearColor( 0x000000, 1);
+            renderer.setSize( window.innerWidth/2, window.innerHeight );
             container.appendChild( renderer.domElement );
 
-//            var renderPass = new THREE.RenderPass(scene, camera);
-//
-//            var composer = new THREE.EffectComposer(renderer);
-//            composer.addPass(renderPass);
+
+
+            composer = new THREE.EffectComposer( renderer );
+            composer.addPass( new THREE.RenderPass( scene, camera ) );
+            {% for shaderPass in Program.get_shader_passes %}
+                var effect = new THREE.ShaderPass({ uniforms: uniforms, vertexShader: snippets['{{ shaderPass.get_shader.get_vertex_id }}'], fragmentShader: snippets['{{ shaderPass.get_shader.get_fragment_id }}'] });
+                composer.addPass( effect );
+            {% endfor %}
+            var effect = new THREE.ShaderPass( THREE.CopyShader );
+            effect.renderToScreen = true;
+            composer.addPass( effect );
 
             onWindowResize();
 
@@ -163,17 +173,14 @@
 
         function render() {
 
-            /* START PROGRAM RENDER PART */
             var delta = clock.getDelta();
-//            uniforms.time.value += delta * 5;
+            uniforms.time.value += delta * 5;
+
+            /* START PROGRAM RENDER PART */
             eval(snippets[{{ Program.get_render.get_id }}]);
-
-//            eval(editors['render_{{ Program.get_render.get_id }}'].getSession().getValue());
-
             /* END PROGRAM RENDER PART */
 
-            renderer.render( scene, camera );
-//            composer.render();
+            composer.render();
 
         }
         snippets[{{ Program.get_render.get_id }}] = `
@@ -188,6 +195,14 @@
         snippets[{{ Program.get_material.get_fragment.get_id }}] = `
         {{ Program.get_material.get_fragment.get_code|raw }}
         `;
+        {% for shaderPass in Program.get_shader_passes %}
+            snippets[{{ shaderPass.get_shader.get_vertex_id }}] = `
+        {{ shaderPass.get_shader.get_vertex.get_code|raw }}
+        `;
+        snippets[{{ shaderPass.get_shader.get_fragment_id }}] = `
+        {{ shaderPass.get_shader.get_fragment.get_code|raw }}
+        `;
+        {% endfor %}
         $(document).ready(function() {
             try {
                 init();

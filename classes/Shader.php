@@ -32,7 +32,29 @@ class Shader extends BaseModel
         $Vertex = $Vertex->get($this->get_vertex_id());
         if (!$Vertex) {
             $Vertex = new Snippet();
-            $Vertex = $Vertex->set_userid($this->get_userid())->set_type(Snippet::$SnippetTypes['vertex'])->set_name('vertex - '.$this->get_name())->create();
+            $Vertex = $Vertex->set_userid($this->get_userid())->set_type(Snippet::$SnippetTypes['vertex'])->set_name('vertex - '.$this->get_name())->set_code('// Predefined uniforms:
+// uniform mat4 modelMatrix;
+// uniform mat4 modelViewMatrix;
+// uniform mat4 projectionMatrix;
+// uniform mat4 viewMatrix;
+// uniform mat3 normalMatrix;
+// uniform vec3 cameraPosition;
+// uniform vec2 resolution;
+// uniform float time;
+
+// Available attributes
+// attribute vec3 position;
+// attribute vec3 normal;
+// attribute vec2 uv;
+// attribute vec2 uv2;
+
+varying vec3 world_position;
+
+void main() {
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+    world_position = position + 0.5;
+}
+')->create();
             $this->set_vertex_id($Vertex->get_id())->save();
         }
         return $Vertex;
@@ -52,7 +74,16 @@ class Shader extends BaseModel
         $Fragment = $Fragment->get($this->get_fragment_id());
         if (!$Fragment) {
             $Fragment = new Snippet();
-            $Fragment = $Fragment->set_userid($this->get_userid())->set_type(Snippet::$SnippetTypes['fragment'])->set_name('fragment - '.$this->get_name())->create();
+            $Fragment = $Fragment->set_userid($this->get_userid())->set_type(Snippet::$SnippetTypes['fragment'])->set_name('fragment - '.$this->get_name())->set_code('// Predefined uniforms:
+// uniform mat4 viewMatrix;
+// uniform vec3 cameraPosition;
+
+varying vec3 world_position;
+
+void main(void) {
+    gl_FragColor = vec4( world_position.x, world_position.y, world_position.z, 1.0 );
+}
+')->create();
             $this->set_fragment_id($Fragment->get_id())->save();
         }
         return $Fragment;

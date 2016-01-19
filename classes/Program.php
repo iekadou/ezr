@@ -95,7 +95,11 @@ class Program extends BaseModel
         $Render = $Render->get($this->get_render_id());
         if (!$Render) {
             $Render = new Snippet();
-            $Render = $Render->set_userid($this->get_userid())->set_type(Snippet::$SnippetTypes['render'])->set_name('render - '.$this->get_name())->create();
+            $Render = $Render->set_userid($this->get_userid())->set_type(Snippet::$SnippetTypes['render'])->set_name('render - '.$this->get_name())->set_code('for (var i = 0; i < scene.children.length; i++) {
+   var object = scene.children[i];
+   object.rotation.y += delta * 1;
+   object.rotation.x += delta * 1;
+}')->create();
             $this->set_render_id($Render->get_id())->save();
         }
         return $Render;

@@ -240,7 +240,7 @@ $(document).lareAlways(function() {
         });
     };
 
-    $('.shaderpasses').sortable();
+    //$('.shaderpasses').sortable();
     $('.ace_editor').each(function() {
         var $id = $(this).attr('id');
         editors[$id] = ace.edit($(this).attr('id'));
