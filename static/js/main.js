@@ -195,14 +195,22 @@ $(document).lareAlways(function() {
     });
     $('.save-program').off('click').on('click', function(e) {
         e.preventDefault();
-        var $shader = $(this).closest('.ace-wrapper');
+        var $program = $(this).closest('.ace-wrapper');
         var data = new FormData();
-        data.append('name', $shader.find('[name="name"]').val());
+        data.append('name', $program.find('[name="name"]').val());
+        data.append('object_type', $program.find('[name="object_type"]').val());
         data.append('id', $(this).attr('data-id'));
         data.append('_method', "PUT");
         Webapp.api_post('/api/account/program/', data);
     });
-
+    $('.preview-program').off('click').on('click', function(e) {
+        e.preventDefault();
+        init();
+    });
+    $('#object_type').off('change').on('change', function(e) {
+        e.preventDefault();
+        init();
+    });
     Webapp.api_post = function(url, data) {
         $.ajax({
             method: "POST",
@@ -254,6 +262,12 @@ $(document).lareAlways(function() {
             readOnly: true
         });
         editors[$(this).attr('id')].getSession().setMode("ace/mode/"+$(this).attr('data-mode'));
+        $(".resizable_" + $id).resizable({
+            minHeight: 300,
+            resize: function( event, ui ) {
+                editors[$id].resize();
+            }
+        });
     });
 
     Webapp.register_api_forms();
@@ -264,12 +278,18 @@ $(document).lareAlways(function() {
     }
     Webapp.closeNavbar();
     $(document).keydown(function(event) {
-        // If Control or Command key is pressed and the S key is pressed
-        // run save function. 83 is the key code for S.
+        // CMD / CTRL + S
         if((event.ctrlKey || event.metaKey) && event.which == 83) {
             // Save Function
             event.preventDefault();
             $(event.target).closest('.ace-wrapper').find('.save').click();
+            return false;
+        }
+        // CMD / CTRL + S
+        if((event.ctrlKey || event.metaKey) && event.which == 68) {
+            // Save Function
+            event.preventDefault();
+            $(event.target).closest('.ace-wrapper').find('.preview').click();
             return false;
         }
     });

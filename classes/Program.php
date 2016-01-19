@@ -6,7 +6,30 @@ class Program extends BaseModel
 {
 
     protected $table = 'program';
-    protected $fields = array('userid', 'name', 'init_id', 'render_id', 'material_id');
+    protected $fields = array('userid', 'name', 'init_id', 'render_id', 'material_id', 'object_type');
+
+    public static $ObjectTypes = array('cube'=>1, 'sphere'=>2, 'torus'=>3);
+    public static $ObjectTypeNames = array(1=>'cube', 2=>'sphere',3=>'torus');
+
+    public function get_object_type() {
+        return $this->object_type;
+    }
+
+    public function get_object_type_display() {
+        if (isset(Program::$ObjectTypeNames[$this->object_type])) {
+            return Program::$ObjectTypeNames[$this->object_type];
+        }
+        return "-";
+    }
+
+    public function set_object_type($object_type) {
+        if (isset(Program::$ObjectTypes[$object_type])) {
+            $this->object_type = Program::$ObjectTypes[$object_type];
+        } else {
+            $this->errors[] = 'object_type';
+        }
+        return $this;
+    }
 
     public function get_name() {
         return $this->name;
@@ -90,6 +113,7 @@ class Program extends BaseModel
 
     public function interpret_request($POST, $FILES) {
         $this->set_name($POST['name']);
+        $this->set_object_type($POST['object_type']);
         if (!empty($this->errors)) {
             throw new ValidationError($this->errors);
         }

@@ -3,9 +3,22 @@
 <div id="page" style="position: relative; height: 100%;">
     <div id="editor_plane" style="height: 100%; position: relative; width: 50%; left: 0; top:0">
         <br>
-        <div class="form-group ace-wrapper" id="program_{{ Program.get_id }}_wrapper">
-            <input type="text" class="form-control" name="name" value="{{ Program.get_name }}" style="background-color: rgb(39, 40, 34); color: #f7f7f7;">
-            <a href="#" class="btn btn-default save-program save" data-id="{{ Program.get_id }}">{% _"save" %} (Ctrl-S)</a>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group ace-wrapper" id="program_{{ Program.get_id }}_wrapper">
+                        <input type="text" class="form-control" name="name" value="{{ Program.get_name }}" style="background-color: rgb(39, 40, 34); color: #f7f7f7;">
+                        <select name="object_type" id="object_type" class="form-control">
+                            <option value="sphere" {% if Program.get_object_type_display == 'sphere' %}selected{% endif %}>{% _"Sphere" %}</option>
+                            <option value="cube" {% if Program.get_object_type_display == 'cube' %}selected{% endif %}>{% _"Cube" %}</option>
+                            <option value="torus" {% if Program.get_object_type_display == 'torus' %}selected{% endif %}>{% _"Torus Knot" %}</option>
+                        </select>
+                        <a href="#" class="btn btn-default save-program save" data-id="{{ Program.get_id }}">{% _"save" %} (Ctrl-S)</a>
+                        <a href="#" class="btn btn-default preview-program preview">{% _"preview" %} (Ctrl-D)</a>
+                    </div>
+                </div>
+            </div>
         </div>
         <br>
         <div class="container-fluid">
@@ -15,7 +28,7 @@
                         <a data-toggle="collapse" href="#snippet_{{ Program.get_init.get_id }}_wrapper"><h4>Init method</h4></a>
                         <div class="form-group collapse ace-wrapper" id="snippet_{{ Program.get_init.get_id }}_wrapper">
                             <input type="text" class="form-control" name="name" value="{{ Program.get_init.get_name }}" style="background-color: rgb(39, 40, 34); color: #f7f7f7;">
-                            <div id="snippet_{{ Program.get_init.get_id }}" class="form-control ace_editor snippet" data-mode="javascript">{{ Program.get_init.get_code|raw }}</div>
+                            <div class="resizable resizable_snippet_{{ Program.get_init.get_id }}"><div id="snippet_{{ Program.get_init.get_id }}" class="form-control ace_editor snippet" data-mode="javascript">{{ Program.get_init.get_code|raw }}</div></div>
                             <a href="#" class="btn btn-default save-snippet save" data-id="{{ Program.get_init.get_id }}">{% _"save" %} (Ctrl-S)</a>
                             <a href="#" class="btn btn-default preview-snippet preview">{% _"preview" %} (Ctrl-D)</a>
                         </div>
@@ -26,7 +39,7 @@
                         <a data-toggle="collapse" href="#snippet_{{ Program.get_render.get_id }}_wrapper"><h4>Render method</h4></a>
                         <div class="form-group collapse ace-wrapper" id="snippet_{{ Program.get_render.get_id }}_wrapper">
                             <input type="text" class="form-control" name="name" value="{{ Program.get_render.get_name }}" style="background-color: rgb(39, 40, 34); color: #f7f7f7;">
-                            <div id="snippet_{{ Program.get_render.get_id }}" class="form-control ace_editor snippet" data-mode="javascript">{{ Program.get_render.get_code|raw }}</div>
+                            <div class="resizable resizable_snippet_{{ Program.get_render.get_id }}"><div id="snippet_{{ Program.get_render.get_id }}" class="form-control ace_editor snippet" data-mode="javascript">{{ Program.get_render.get_code|raw }}</div></div>
                             <a href="#" class="btn btn-default save-snippet save" data-id="{{ Program.get_render.get_id }}">{% _"save" %} (Ctrl-S)</a>
                             <a href="#" class="btn btn-default preview-snippet preview">{% _"preview" %} (Ctrl-D)</a>
                         </div>
@@ -35,12 +48,12 @@
                 <div class="col-xs-12">
                     <div class="well">
                         <a data-toggle="collapse" href="#shader_{{ Program.get_material.get_id }}_wrapper"><h4>Material</h4></a>
-                        <div class="form-group collapse ace-wrapper" id="shader_{{ Program.get_material.get_id }}_wrapper">
+                        <div class="form-group ace-wrapper" id="shader_{{ Program.get_material.get_id }}_wrapper">
                             <input type="text" class="form-control" name="name" value="{{ Program.get_material.get_name }}" style="background-color: rgb(39, 40, 34); color: #f7f7f7;">
                             <label for="snippet_{{ Program.get_material.get_vertex_id }}">Vertex</label>
-                            <div id="snippet_{{ Program.get_material.get_vertex_id }}" class="form-control ace_editor vertex" data-mode="glsl">{{ Program.get_material.get_vertex.get_code|raw }}</div>
+                            <div class="resizable resizable_snippet_{{ Program.get_material.get_vertex_id }}"><div id="snippet_{{ Program.get_material.get_vertex_id }}" class="form-control ace_editor vertex" data-mode="glsl">{{ Program.get_material.get_vertex.get_code|raw }}</div></div>
                             <label for="snippet_{{ Program.get_material.get_vertex_id }}">Fragment</label>
-                            <div id="snippet_{{ Program.get_material.get_fragment_id }}" class="form-control ace_editor fragment" data-mode="glsl">{{ Program.get_material.get_fragment.get_code|raw }}</div>
+                            <div class="resizable resizable_snippet_{{ Program.get_material.get_fragment_id }}"><div id="snippet_{{ Program.get_material.get_fragment_id }}" class="form-control ace_editor fragment" data-mode="glsl">{{ Program.get_material.get_fragment.get_code|raw }}</div></div>
                             <a href="#" class="btn btn-default save-shader save" data-id="{{ Program.get_material.get_id }}">{% _"save" %} (Ctrl-S)</a>
                             <a href="#" class="btn btn-default preview-shader preview">{% _"preview" %} (Ctrl-D)</a>
                         </div>
@@ -87,7 +100,6 @@
 
             scene = new THREE.Scene();
 
-            var geometry = new THREE.BoxGeometry( 1, 1, 1 );
 
             /* START PROGRAM INIT PART */
             eval(snippets[{{ Program.get_init.get_id }}]);
@@ -98,9 +110,20 @@
                 vertexShader: snippets[{{ Program.get_material.get_vertex.get_id }}],/* vertex_shader */
                 fragmentShader: snippets[{{ Program.get_material.get_fragment.get_id }}]/* fragment_shader */
             } );
+            var geometry;
+            geometry_selection = $('#object_type').val();
+            switch (geometry_selection) {
+                case 'sphere':
+                    geometry = new THREE.SphereGeometry( 0.5, 32, 32 );
+                    break;
+                case 'torus':
+                    geometry = new THREE.TorusKnotGeometry( 0.3, 0.1, 1000, 54 );
+                    break;
+                default:
+                    geometry = new THREE.BoxGeometry( 1, 1, 1 );
+            }
             var mesh = new THREE.Mesh( geometry, material );
             scene.add( mesh );
-
 
             renderer = new THREE.WebGLRenderer();
             renderer.setPixelRatio( window.devicePixelRatio );
@@ -175,13 +198,5 @@
         });
 
     </script>
-    <script src="/static/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
-    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-    <script>
-        $(document).ready(function() {
-        });
-    </script>
-
-
 </div>
 {% endblock page %}
