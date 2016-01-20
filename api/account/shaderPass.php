@@ -42,7 +42,7 @@ try {
             if ($ShaderPass->create()) {
                 new View('', '', '_include/_shader_pass.html');
                 View::set_template_var('shaderPass', $ShaderPass);
-                View::render();
+                echo '{"vertex_id": "'.$ShaderPass->get_shader()->get_vertex_id().'", "fragment_id": "'.$ShaderPass->get_shader()->get_fragment_id().'", "rendered_html": '.json_encode(utf8_encode(View::render($display=false))).'}';
                 die();
             }
             break;

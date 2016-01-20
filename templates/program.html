@@ -83,6 +83,12 @@
 
         var camera, scene, renderer, composer;
 
+
+        var shader_passes = [];
+        {% for shaderPass in Program.get_shader_passes %}
+        shader_passes.push({'vertex_id': '{{ shaderPass.get_shader.get_vertex_id }}','fragment_id': '{{ shaderPass.get_shader.get_fragment_id }}'});
+        {% endfor %}
+
         var uniforms = {};
         var material;
 
@@ -139,10 +145,9 @@
 
             composer = new THREE.EffectComposer( renderer );
             composer.addPass( new THREE.RenderPass( scene, camera ) );
-            {% for shaderPass in Program.get_shader_passes %}
-                var effect = new THREE.ShaderPass({ uniforms: uniforms, vertexShader: snippets['{{ shaderPass.get_shader.get_vertex_id }}'], fragmentShader: snippets['{{ shaderPass.get_shader.get_fragment_id }}'] });
-                composer.addPass( effect );
-            {% endfor %}
+            for (var i = 0; i < shader_passes.length; i++) {
+                composer.addPass(new THREE.ShaderPass({ uniforms: uniforms, vertexShader: snippets[shader_passes[i].vertex_id], fragmentShader: snippets[shader_passes[i].fragment_id] }));
+            }
             var effect = new THREE.ShaderPass( THREE.CopyShader );
             effect.renderToScreen = true;
             composer.addPass( effect );

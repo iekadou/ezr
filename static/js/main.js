@@ -139,11 +139,97 @@
     Webapp.closeNavbar = function() {
         $('#inner_navbar.dropdown.open .dropdown-toggle').dropdown('toggle');
     };
+
+    Webapp.register_ace_editors = function () {
+        $('.ace_editor').each(function() {
+            var $id = $(this).attr('id');
+            editors[$id] = ace.edit($(this).attr('id'));
+            editors[$id].setTheme("ace/theme/monokai");
+            editors[$id].commands.addCommand({
+                name: 'preview',
+                bindKey: {win: "Ctrl-D", mac: "Cmd-D"},
+                exec: function(editor) {
+                    $(editor.container).closest('.ace-wrapper').find('.preview').click();
+                },
+                readOnly: true
+            });
+            editors[$id].commands.addCommand({
+                name: 'save',
+                bindKey: {win: "Ctrl-S", mac: "Cmd-S"},
+                exec: function(editor) {
+                    $(editor.container).closest('.ace-wrapper').find('.save').click();
+                },
+                readOnly: true
+            });
+            editors[$(this).attr('id')].getSession().setMode("ace/mode/"+$(this).attr('data-mode'));
+            $(".resizable_" + $id).resizable({
+                minHeight: 300,
+                resize: function( event, ui ) {
+                    editors[$id].resize();
+                }
+            });
+        });
+    };
+    Webapp.register_program_btns = function() {
+        $('.preview-snippet').off('click').on('click', function(e) {
+            e.preventDefault();
+            var $snippet = $(this).closest('.ace-wrapper');
+            snippets[$snippet.find('.snippet').attr('id').split("snippet_")[1]] = editors[$snippet.find('.snippet').attr('id')].getSession().getValue();
+            init();
+        });
+        $('.save-snippet').off('click').on('click', function(e) {
+            e.preventDefault();
+            var $snippet = $(this).closest('.ace-wrapper');
+            var data = new FormData();
+            data.append('name', $snippet.find('[name="name"]').val());
+            data.append('id', $(this).attr('data-id'));
+            data.append('code', editors[$snippet.find('.snippet').attr('id')].getSession().getValue());
+            data.append('_method', "PUT");
+            Webapp.api_post('/api/account/snippet/', data);
+        });
+        $('.preview-shader').off('click').on('click', function(e) {
+            e.preventDefault();
+            var $shader = $(this).closest('.ace-wrapper');
+            snippets[$shader.find('.vertex').attr('id').split("snippet_")[1]] = editors[$shader.find('.vertex').attr('id')].getSession().getValue();
+            snippets[$shader.find('.fragment').attr('id').split("snippet_")[1]] = editors[$shader.find('.fragment').attr('id')].getSession().getValue();
+            init();
+        });
+        $('.save-shader').off('click').on('click', function(e) {
+            e.preventDefault();
+            var $shader = $(this).closest('.ace-wrapper');
+            var data = new FormData();
+            data.append('name', $shader.find('[name="name"]').val());
+            data.append('id', $(this).attr('data-id'));
+            data.append('vertex_code', editors[$shader.find('.vertex').attr('id')].getSession().getValue());
+            data.append('fragment_code', editors[$shader.find('.fragment').attr('id')].getSession().getValue());
+            data.append('_method', "PUT");
+            Webapp.api_post('/api/account/shader/', data);
+        });
+        $('.save-program').off('click').on('click', function(e) {
+            e.preventDefault();
+            var $program = $(this).closest('.ace-wrapper');
+            var data = new FormData();
+            data.append('name', $program.find('[name="name"]').val());
+            data.append('object_type', $program.find('[name="object_type"]').val());
+            data.append('id', $(this).attr('data-id'));
+            data.append('_method', "PUT");
+            Webapp.api_post('/api/account/program/', data);
+        });
+        $('.preview-program').off('click').on('click', function(e) {
+            e.preventDefault();
+            init();
+        });
+        $('#object_type').off('change').on('change', function(e) {
+            e.preventDefault();
+            init();
+        });
+    };
 }(window.Webapp = window.Webapp || {}, jQuery));
 
 
 $(document).lareAlways(function() {
-    $('#add-shader-pass').off('click').on('click', function() {
+    $('#add-shader-pass').off('click').on('click', function(e) {
+        e.preventDefault();
         var data = new FormData();
         data.append('program_id', $(this).attr('data-program-id'));
         data.append('_method', "POST");
@@ -155,62 +241,16 @@ $(document).lareAlways(function() {
             contentType: false,
             dataType: 'json',
             success: function (data, successCode, jqXHR) {
-                alert("POST!");
+                $('#add-shader-pass').before(data.rendered_html);
+                shader_passes.push({'vertex_id': data.vertex_id,'fragment_id': data.fragment_id});
+                snippets[data.vertex_id] = '';
+                snippets[data.fragment_id] = '';
+                Webapp.register_ace_editors();
+                Webapp.register_program_btns();
             }
         });
     });
-    $('.preview-snippet').off('click').on('click', function(e) {
-        e.preventDefault();
-        var $snippet = $(this).closest('.ace-wrapper');
-        snippets[$snippet.find('.snippet').attr('id').split("snippet_")[1]] = editors[$snippet.find('.snippet').attr('id')].getSession().getValue();
-        init();
-    });
-    $('.save-snippet').off('click').on('click', function(e) {
-        e.preventDefault();
-        var $snippet = $(this).closest('.ace-wrapper');
-        var data = new FormData();
-        data.append('name', $snippet.find('[name="name"]').val());
-        data.append('id', $(this).attr('data-id'));
-        data.append('code', editors[$snippet.find('.snippet').attr('id')].getSession().getValue());
-        data.append('_method', "PUT");
-        Webapp.api_post('/api/account/snippet/', data);
-    });
-    $('.preview-shader').off('click').on('click', function(e) {
-        e.preventDefault();
-        var $shader = $(this).closest('.ace-wrapper');
-        snippets[$shader.find('.vertex').attr('id').split("snippet_")[1]] = editors[$shader.find('.vertex').attr('id')].getSession().getValue();
-        snippets[$shader.find('.fragment').attr('id').split("snippet_")[1]] = editors[$shader.find('.fragment').attr('id')].getSession().getValue();
-        init();
-    });
-    $('.save-shader').off('click').on('click', function(e) {
-        e.preventDefault();
-        var $shader = $(this).closest('.ace-wrapper');
-        var data = new FormData();
-        data.append('name', $shader.find('[name="name"]').val());
-        data.append('id', $(this).attr('data-id'));
-        data.append('vertex_code', editors[$shader.find('.vertex').attr('id')].getSession().getValue());
-        data.append('fragment_code', editors[$shader.find('.fragment').attr('id')].getSession().getValue());
-        data.append('_method', "PUT");
-        Webapp.api_post('/api/account/shader/', data);
-    });
-    $('.save-program').off('click').on('click', function(e) {
-        e.preventDefault();
-        var $program = $(this).closest('.ace-wrapper');
-        var data = new FormData();
-        data.append('name', $program.find('[name="name"]').val());
-        data.append('object_type', $program.find('[name="object_type"]').val());
-        data.append('id', $(this).attr('data-id'));
-        data.append('_method', "PUT");
-        Webapp.api_post('/api/account/program/', data);
-    });
-    $('.preview-program').off('click').on('click', function(e) {
-        e.preventDefault();
-        init();
-    });
-    $('#object_type').off('change').on('change', function(e) {
-        e.preventDefault();
-        init();
-    });
+    Webapp.register_program_btns();
     Webapp.api_post = function(url, data) {
         $.ajax({
             method: "POST",
@@ -241,35 +281,7 @@ $(document).lareAlways(function() {
     };
 
     //$('.shaderpasses').sortable();
-    $('.ace_editor').each(function() {
-        var $id = $(this).attr('id');
-        editors[$id] = ace.edit($(this).attr('id'));
-        editors[$id].setTheme("ace/theme/monokai");
-        editors[$id].commands.addCommand({
-            name: 'preview',
-            bindKey: {win: "Ctrl-D", mac: "Cmd-D"},
-            exec: function(editor) {
-                $(editor.container).closest('.ace-wrapper').find('.preview').click();
-            },
-            readOnly: true
-        });
-        editors[$id].commands.addCommand({
-            name: 'save',
-            bindKey: {win: "Ctrl-S", mac: "Cmd-S"},
-            exec: function(editor) {
-                $(editor.container).closest('.ace-wrapper').find('.save').click();
-            },
-            readOnly: true
-        });
-        editors[$(this).attr('id')].getSession().setMode("ace/mode/"+$(this).attr('data-mode'));
-        $(".resizable_" + $id).resizable({
-            minHeight: 300,
-            resize: function( event, ui ) {
-                editors[$id].resize();
-            }
-        });
-    });
-
+    Webapp.register_ace_editors();
     Webapp.register_api_forms();
     if ($.support.lare) {
         $('a').not('[data-non-lare]').on('click', function(event) {

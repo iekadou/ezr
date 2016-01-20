@@ -66,7 +66,7 @@ class View
         return self::$template_vars;
     }
 
-    public static function render() {
+    public static function render($display=true) {
         if (TEMPLATE_CACHING) {
             header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
             header("Cache-Control: post-check=0, pre-check=0", false);
@@ -87,6 +87,10 @@ class View
         });
 
         self::$template->addFilter($filter);
-        echo self::$template->render(self::$template_name, self::get_template_vars());
+        if ($display) {
+            echo self::$template->render(self::$template_name, self::get_template_vars());
+        } else {
+            return self::$template->render(self::$template_name, self::get_template_vars());
+        }
     }
 }
