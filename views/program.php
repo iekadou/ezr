@@ -5,7 +5,9 @@ require_once("../inc/include.php");
 $program_id = isset($_GET['program_id']) ? htmlspecialchars($_GET['program_id']) : false;
 $Program = new Program();
 if ($program_id == 'new' && Account::is_logged_in()) {
-    $Program = $Program->set_name('new program')->set_userid(Account::get_user_id())->create();
+    $Program = $Program->set_name('new program')->set_userid(Account::get_user_id());
+    $Program->get_material()->sample_material()->save();
+    $Program->create();
     header("Location: ".UrlsPy::get_url('program', $Program->get_id()));
 } else {
     $Program = $Program->get($program_id);

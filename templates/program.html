@@ -13,6 +13,7 @@
                             <option value="sphere" {% if Program.get_object_type_display == 'sphere' %}selected{% endif %}>{% _"Sphere" %}</option>
                             <option value="cube" {% if Program.get_object_type_display == 'cube' %}selected{% endif %}>{% _"Cube" %}</option>
                             <option value="torus" {% if Program.get_object_type_display == 'torus' %}selected{% endif %}>{% _"Torus Knot" %}</option>
+                            <option value="teapot" {% if Program.get_object_type_display == 'teapot' %}selected{% endif %}>{% _"Teapot" %}</option>
                         </select>
                         <a href="#" class="btn btn-default save-program save" data-id="{{ Program.get_id }}">{% _"save" %} (Ctrl-S)</a>
                         <a href="#" class="btn btn-default preview-program preview">{% _"preview" %} (Ctrl-D)</a>
@@ -101,12 +102,12 @@
 
             scene = new THREE.Scene();
 
-
             /* START PROGRAM INIT PART */
             eval(snippets[{{ Program.get_init.get_id }}]);
             /* END PROGRAM INIT PART */
             uniforms.resolution = { type: "v2", value: new THREE.Vector2() };
             uniforms.time = { type: "f", value: 1.0 };
+            uniforms.tDiffuse = { type: "t", value: null };
             material = new THREE.ShaderMaterial( {
                 uniforms: uniforms,
                 vertexShader: snippets[{{ Program.get_material.get_vertex.get_id }}],/* vertex_shader */
@@ -121,6 +122,9 @@
                 case 'torus':
                     geometry = new THREE.TorusKnotGeometry( 0.3, 0.1, 1000, 54 );
                     break;
+                case 'teapot':
+                    geometry = new THREE.TeapotGeometry(0.3, 10, true, true, true, true);
+                    break;
                 default:
                     geometry = new THREE.BoxGeometry( 1, 1, 1 );
             }
@@ -132,8 +136,6 @@
             renderer.setClearColor( 0x000000, 1);
             renderer.setSize( window.innerWidth/2, window.innerHeight );
             container.appendChild( renderer.domElement );
-
-
 
             composer = new THREE.EffectComposer( renderer );
             composer.addPass( new THREE.RenderPass( scene, camera ) );

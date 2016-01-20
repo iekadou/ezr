@@ -38,7 +38,7 @@ try {
             }
             $ShaderPass = $ShaderPass->set_userid(Account::get_user_id());
             try { $ShaderPass = $ShaderPass->interpret_request($_POST, $_FILES); } catch (ValidationError $e) { echo $e->stringify(); die(); }
-//            print_r($ShaderPass->get_program_id());
+            $ShaderPass->get_shader()->sample_post_processing()->save();
             if ($ShaderPass->create()) {
                 new View('', '', '_include/_shader_pass.html');
                 View::set_template_var('shaderPass', $ShaderPass);
@@ -47,9 +47,8 @@ try {
             }
             break;
         default:
-            print_r(REQUEST_METHOD);
-//            raise404();
-//            die();
+            raise404();
+            die();
     }
     throw new ValidationError(array());
 } catch (ValidationError $e) { echo $e->stringify(); die(); }

@@ -32,7 +32,54 @@ class Shader extends BaseModel
         $Vertex = $Vertex->get($this->get_vertex_id());
         if (!$Vertex) {
             $Vertex = new Snippet();
-            $Vertex = $Vertex->set_userid($this->get_userid())->set_type(Snippet::$SnippetTypes['vertex'])->set_name('vertex - '.$this->get_name())->set_code('// Predefined uniforms:
+            $Vertex = $Vertex->set_userid($this->get_userid())->set_type(Snippet::$SnippetTypes['vertex'])->set_name('vertex - '.$this->get_name())->create();
+            $this->set_vertex_id($Vertex->get_id())->save();
+        }
+        return $Vertex;
+    }
+
+    public function get_fragment_id() {
+        return $this->fragment_id;
+    }
+
+    public function set_fragment_id($fragment_id) {
+        $this->fragment_id = $fragment_id;
+        return $this;
+    }
+
+    public function get_fragment() {
+        $Fragment = new Snippet();
+        $Fragment = $Fragment->get($this->get_fragment_id());
+        if (!$Fragment) {
+            $Fragment = new Snippet();
+            $Fragment = $Fragment->set_userid($this->get_userid())->set_type(Snippet::$SnippetTypes['fragment'])->set_name('fragment - '.$this->get_name())->create();
+            $this->set_fragment_id($Fragment->get_id())->save();
+        }
+        return $Fragment;
+    }
+
+    public function get_userid() {
+        return $this->userid;
+    }
+
+    public function set_userid($userid) {
+        $userid = $this->db_connection->real_escape_string($userid);
+        $this->userid = $userid;
+        return $this;
+    }
+
+    public function sample_material() {
+        $this->get_fragment()->set_code('// Predefined uniforms:
+// uniform mat4 viewMatrix;
+// uniform vec3 cameraPosition;
+
+varying vec3 world_position;
+
+void main(void) {
+    gl_FragColor = vec4( world_position.x, world_position.y, world_position.z, 1.0 );
+}
+')->save();
+        $this->get_vertex()->set_code('// Predefined uniforms:
 // uniform mat4 modelMatrix;
 // uniform mat4 modelViewMatrix;
 // uniform mat4 projectionMatrix;
@@ -54,48 +101,30 @@ void main() {
     gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
     world_position = position + 0.5;
 }
-')->create();
-            $this->set_vertex_id($Vertex->get_id())->save();
-        }
-        return $Vertex;
-    }
-
-    public function get_fragment_id() {
-        return $this->fragment_id;
-    }
-
-    public function set_fragment_id($fragment_id) {
-        $this->fragment_id = $fragment_id;
+')->save();
         return $this;
     }
 
-    public function get_fragment() {
-        $Fragment = new Snippet();
-        $Fragment = $Fragment->get($this->get_fragment_id());
-        if (!$Fragment) {
-            $Fragment = new Snippet();
-            $Fragment = $Fragment->set_userid($this->get_userid())->set_type(Snippet::$SnippetTypes['fragment'])->set_name('fragment - '.$this->get_name())->set_code('// Predefined uniforms:
+    public function sample_post_processing() {
+        $this->get_vertex()->set_code('// Predefined uniforms:
+//uniform sampler2D tDiffuse;
+//uniform sampler2D tDiffuse;
+varying vec2 vUv;
+void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}')->save();
+        $this->get_fragment()->set_code('// Predefined uniforms:
 // uniform mat4 viewMatrix;
 // uniform vec3 cameraPosition;
+// uniform sampler2D tDiffuse;
 
-varying vec3 world_position;
-
-void main(void) {
-    gl_FragColor = vec4( world_position.x, world_position.y, world_position.z, 1.0 );
-}
-')->create();
-            $this->set_fragment_id($Fragment->get_id())->save();
-        }
-        return $Fragment;
-    }
-
-    public function get_userid() {
-        return $this->userid;
-    }
-
-    public function set_userid($userid) {
-        $userid = $this->db_connection->real_escape_string($userid);
-        $this->userid = $userid;
+uniform sampler2D tDiffuse;
+varying vec2 vUv;
+void main() {
+    vec4 texel = texture2D(tDiffuse , vUv );
+    gl_FragColor = texel;
+}')->save();
         return $this;
     }
 
