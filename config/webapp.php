@@ -1,6 +1,6 @@
 <?php
     define("SITE_NAME", 'Shader Ouch!');
-    define("DOMAIN", 'stfu.iekadou.com');
+    define("DOMAIN", 'souch.iekadou.com');
     define("NO_REPLY_EMAIL", "noreply@iekadou.com");
     define("LARE_PREFIX", "Shader Ouch!");
     define("DB_DEBUG", false);
