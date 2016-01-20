@@ -95,12 +95,18 @@ abstract class BaseModel
         return false;
     }
 
-    public function delete($id)
+    public function delete($id=null)
     {
-        $id = $this->db_connection->real_escape_string(htmlentities($id, ENT_QUOTES));
-        $user_query = $this->db_connection->query("DELETE FROM ".$this->table." WHERE id = '" . $id . "';");
-        if ($user_query) {
-            return true;
+        if ($id) {
+            $id = $this->db_connection->real_escape_string(htmlentities($id, ENT_QUOTES));
+        } else {
+            $id = $this->id;
+        }
+        if ($id) {
+            $user_query = $this->db_connection->query("DELETE FROM ".$this->table." WHERE id = '" . $id . "';");
+            if ($user_query) {
+                return true;
+            }
         }
         return false;
     }

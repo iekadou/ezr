@@ -1,8 +1,8 @@
 <?php
-    define("SITE_NAME", 'Shading technologies for understanding');
+    define("SITE_NAME", 'Shader Ouch!');
     define("DOMAIN", 'stfu.iekadou.com');
     define("NO_REPLY_EMAIL", "noreply@iekadou.com");
-    define("LARE_PREFIX", "STFU");
+    define("LARE_PREFIX", "Shader Ouch!");
     define("DB_DEBUG", false);
     define("DB_PROFILER", false);
     define("DB_CACHING", false);

@@ -219,6 +219,28 @@
             e.preventDefault();
             init();
         });
+        $('.delete-shader-pass').off('click').on('click', function(e) {
+            e.preventDefault();
+            var id = $(this).attr('data-id');
+            var $modal = $('#delete-modal');
+            $modal.modal('show');
+            $modal.find('.confirm-delete').off('click').on('click', function(e) {
+                e.preventDefault();
+                var data = new FormData();
+                data.append('id', id);
+                data.append('_method', "DELETE");
+                Webapp.api_post('/api/account/shaderpass/', data, function() {
+                    $('#shaderpass_'+id).remove();
+                    for (var i = 0; i < shader_passes.length; i++) {
+                        if (shader_passes[i].id == id) {
+                            shader_passes.splice(i, 1);
+                            break;
+                        }
+                    }
+                });
+                $modal.modal('hide');
+            });
+        });
         $('#object_type').off('change').on('change', function(e) {
             e.preventDefault();
             init();
@@ -241,17 +263,19 @@ $(document).lareAlways(function() {
             contentType: false,
             dataType: 'json',
             success: function (data, successCode, jqXHR) {
-                $('#add-shader-pass').before(data.rendered_html);
-                shader_passes.push({'vertex_id': data.vertex_id,'fragment_id': data.fragment_id});
+                var $new_shader = $(data.rendered_html);
+                $('#add-shader-pass').before($new_shader);
+                shader_passes.push({'id': data.id, 'vertex_id': data.vertex_id,'fragment_id': data.fragment_id});
                 snippets[data.vertex_id] = '';
                 snippets[data.fragment_id] = '';
                 Webapp.register_ace_editors();
                 Webapp.register_program_btns();
+                $new_shader.find('.preview-shader').click();
             }
         });
     });
     Webapp.register_program_btns();
-    Webapp.api_post = function(url, data) {
+    Webapp.api_post = function(url, data, callback) {
         $.ajax({
             method: "POST",
             url: url,
@@ -274,6 +298,9 @@ $(document).lareAlways(function() {
                             }
                         }
                     }
+                }
+                if (callback) {
+                    callback();
                 }
                 init();
             }

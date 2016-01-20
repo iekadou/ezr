@@ -16,7 +16,7 @@ try {
     switch (REQUEST_METHOD){
         case "PUT":
             $id = (isset($_POST['id']) ? htmlspecialchars($_POST['id']) : false);
-            $ShaderPass = $ShaderPass->get_by(array(array("id", "=", $id), array("userid", "=", Account::get_user_id())));
+            $ShaderPass = $ShaderPass->get_by(array(array("id", "=", $id)));
             if ($ShaderPass == false) {
                 raise404();
                 die();
@@ -42,14 +42,32 @@ try {
             if ($ShaderPass->create()) {
                 new View('', '', '_include/_shader_pass.html');
                 View::set_template_var('shaderPass', $ShaderPass);
-                echo '{"vertex_id": "'.$ShaderPass->get_shader()->get_vertex_id().'", "fragment_id": "'.$ShaderPass->get_shader()->get_fragment_id().'", "rendered_html": '.json_encode(utf8_encode(View::render($display=false))).'}';
+                echo '{"id": "'.$ShaderPass->get_id().'", "vertex_id": "'.$ShaderPass->get_shader()->get_vertex_id().'", "fragment_id": "'.$ShaderPass->get_shader()->get_fragment_id().'", "rendered_html": '.json_encode(utf8_encode(View::render($display=false))).'}';
+                die();
+            }
+            break;
+        case "DELETE":
+            $id = (isset($_POST['id']) ? htmlspecialchars($_POST['id']) : false);
+            $ShaderPass = $ShaderPass->get_by(array(array("id", "=", $id)));
+            if ($ShaderPass == false) {
+                raise404();
+                die();
+            }
+            if ($ShaderPass->get_userid() != Account::get_user_id()) {
+                echo '{"error_msgs": [{"title": "'.Translation::translate('No access!').'", "message": "'.Translation::translate('You can only delete your own stuff!').'"}]}';
+                die();
+            }
+            if ($ShaderPass->delete()) {
+                echo '{"success_msgs": [{"title": "'.Translation::translate('Deleted!').'", "message": "'.Translation::translate('You deleted this shader pass successfully!').'"}]}';
+                die();
+            } else {
+                echo '{"error_msgs": [{"title": "'.Translation::translate('Error!').'", "message": "'.Translation::translate('Could not delete shader pass!').'"}]}';
                 die();
             }
             break;
         default:
-            print_r(REQUEST_METHOD);
-//            raise404();
-//            die();
+            raise404();
+            die();
     }
     throw new ValidationError(array());
 } catch (ValidationError $e) { echo $e->stringify(); die(); }
