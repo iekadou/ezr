@@ -47,8 +47,9 @@ try {
             }
             break;
         default:
-            raise404();
-            die();
+            print_r(REQUEST_METHOD);
+//            raise404();
+//            die();
     }
     throw new ValidationError(array());
 } catch (ValidationError $e) { echo $e->stringify(); die(); }
