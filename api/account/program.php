@@ -14,6 +14,22 @@ try {
         throw new ValidationError($errors);
     }
     switch (REQUEST_METHOD){
+        case "DELETE":
+            $id = (isset($_POST['id']) ? htmlspecialchars($_POST['id']) : false);
+            $Program = $Program->get_by(array(array("id", "=", $id)));
+            if ($Program == false) {
+                raise404();
+                die();
+            }
+            if ($Program->get_userid() != Account::get_user_id()) {
+                echo '{"error_msgs": [{"title": "'.Translation::translate('No access!').'", "message": "'.Translation::translate('You can only save your own stuff!').'"}]}';
+                die();
+            }
+            if ($Program->delete()) {
+                echo '{"success_msgs": [{"title": "'.Translation::translate('Deleted!').'", "message": "'.Translation::translate('Deleted successfully!').'"}]}';
+                die();
+            }
+            break;
         case "PUT":
             $id = (isset($_POST['id']) ? htmlspecialchars($_POST['id']) : false);
             $Program = $Program->get_by(array(array("id", "=", $id)));

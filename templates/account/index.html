@@ -17,14 +17,16 @@
                             <th>#</th>
                             <th class="text-center">{% _"Name" %}</th>
                             <th class="text-center">{% _"Show" %}</th>
+                            <th class="text-center">{% _"Delete" %}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for program in Account.get_programs %}
-                            <tr>
+                            <tr id="program_{{ program.get_id }}">
                                 <td>{{ loop.revindex }}</td>
                                 <td class="text-center">{{ program.get_name }}</td>
                                 <td class="text-center"><a href="{% url 'program' program.get_id %}"><span class="fa fa-eye fa-2x"></span></a></td>
+                                <td class="text-center"><a href="#" class="delete delete-program btn btn-danger" data-id="{{ program.get_id }}"><span class="fa fa-trash"></span></a></td>
                             </tr>
                         {% else %}
                             <tr><td colspan="3" class="text-center">{% _"No programs, yet!" %}</td></tr>

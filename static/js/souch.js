@@ -119,6 +119,22 @@
                 $modal.modal('hide');
             });
         });
+        $('.delete-program').off('click').on('click', function(e) {
+            e.preventDefault();
+            var id = $(this).attr('data-id');
+            var $modal = $('#delete-modal');
+            $modal.modal('show');
+            $modal.find('.confirm-delete').off('click').on('click', function(e) {
+                e.preventDefault();
+                var data = new FormData();
+                data.append('id', id);
+                data.append('_method', "DELETE");
+                Webapp.api_post('/api/account/program/', data, function(data, successCode, jqXHR) {
+                    $('#program_'+id).remove();
+                });
+                $modal.modal('hide');
+            });
+        });
         $('#object_type').off('change').on('change', function(e) {
             e.preventDefault();
             init();
