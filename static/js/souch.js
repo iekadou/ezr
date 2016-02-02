@@ -87,7 +87,7 @@
             Webapp.api_post('/api/account/shaderpass/', data, function(data, successCode, jqXHR) {
                 var $new_shader = $(data.rendered_html);
                 $('#add-shader-pass').before($new_shader);
-                shader_passes.push({'id': data.id, 'vertex_id': data.vertex_id,'fragment_id': data.fragment_id});
+                shaderPasses.push({'id': data.id, 'vertex_id': data.vertex_id,'fragment_id': data.fragment_id});
                 snippets[data.vertex_id] = '';
                 snippets[data.fragment_id] = '';
                 Webapp.register_ace_editors();
@@ -108,9 +108,9 @@
                 data.append('_method', "DELETE");
                 Webapp.api_post('/api/account/shaderpass/', data, function(data, successCode, jqXHR) {
                     $('#shaderpass_'+id).remove();
-                    for (var i = 0; i < shader_passes.length; i++) {
-                        if (shader_passes[i].id == id) {
-                            shader_passes.splice(i, 1);
+                    for (var i = 0; i < shaderPasses.length; i++) {
+                        if (shaderPasses[i].id == id) {
+                            shaderPasses.splice(i, 1);
                             break;
                         }
                     }
