@@ -126,6 +126,11 @@ class Program extends BaseModel
         return $this;
     }
 
+    public function get_render_passes() {
+        $RenderPass = new RenderPass();
+        return $RenderPass->filter_by(array(array('program_id', '=', $this->id)));
+    }
+
     public function get_shader_passes() {
         $ShaderPass = new ShaderPass();
         return $ShaderPass->filter_by(array(array('program_id', '=', $this->id)));

@@ -34,6 +34,7 @@ RewriteRule ^api/account/program/$ api_views/account/program.php [L] ###api:acco
 RewriteRule ^api/account/shader/$ api_views/account/shader.php [L] ###api:account:shader###
 RewriteRule ^api/account/snippet/$ api_views/account/snippet.php [L] ###api:account:snippet###
 RewriteRule ^api/account/shaderpass/$ api_views/account/shaderpass.php [L] ###api:account:shaderpass###
+RewriteRule ^api/account/renderpass/$ api_views/account/renderpass.php [L] ###api:account:renderpass###
 RewriteRule ^api/account/activate/$ api_views/account/activate.php [L] ###api:account:activate###
 #URLS_PY END#
 

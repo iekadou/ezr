@@ -4,9 +4,9 @@
     <div class="form-group collapse ace-wrapper" id="shader_{{ shaderPass.get_shader.get_id }}_wrapper">
         <input type="text" class="form-control" name="name" value="{{ shaderPass.get_shader.get_name }}" style="background-color: rgb(39, 40, 34); color: #f7f7f7;">
         <label for="snippet_{{ shaderPass.get_shader.get_vertex_id }}">Vertex</label>
-        <div class="resizable resizable_snippet_{{ shaderPass.get_shader.get_vertex_id }}"><div id="snippet_{{ shaderPass.get_shader.get_vertex_id }}" class="form-control ace_editor vertex" data-mode="glsl">{{ shaderPass.get_shader.get_vertex.get_code|raw }}</div></div>
+        <div class="resizable resizable_snippet_{{ shaderPass.get_shader.get_vertex_id }}"><div id="snippet_{{ shaderPass.get_shader.get_vertex_id }}" class="form-control ace_editor vertex" data-mode="glsl"></div></div>
         <label for="snippet_{{ shaderPass.get_shader.get_fragment_id }}">Fragment</label>
-        <div class="resizable resizable_snippet_{{ shaderPass.get_shader.get_fragment_id }}"><div id="snippet_{{ shaderPass.get_shader.get_fragment_id }}" class="form-control ace_editor fragment" data-mode="glsl">{{ shaderPass.get_shader.get_fragment.get_code|raw }}</div></div>
+        <div class="resizable resizable_snippet_{{ shaderPass.get_shader.get_fragment_id }}"><div id="snippet_{{ shaderPass.get_shader.get_fragment_id }}" class="form-control ace_editor fragment" data-mode="glsl"></div></div>
         <a href="#" class="btn btn-default save-shader save" data-id="{{ shaderPass.get_shader.get_id }}">{% _"save" %} (Ctrl-S)</a>
         <a href="#" class="btn btn-default preview-shader preview">{% _"preview" %} (Ctrl-D)</a>
         <a href="#" class="btn btn-danger delete-shader-pass" data-id="{{ shaderPass.get_id }}">{% _"delete" %}</a>

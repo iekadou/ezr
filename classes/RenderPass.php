@@ -2,10 +2,10 @@
 
 namespace Iekadou\Webapp;
 
-class ShaderPass extends BaseModel
+class RenderPass extends BaseModel
 {
-    protected $table = 'shaderpass';
-    protected $fields = array('userid', 'program_id', 'shader_id', 'enabled', 'needs_swap', 'rank');
+    protected $table = 'renderpass';
+    protected $fields = array('userid', 'program_id', 'shader_id', 'enabled', 'needs_swap', 'rank', 'texture_name');
 
     public function get_program_id() {
         return $this->program_id;
@@ -79,7 +79,20 @@ class ShaderPass extends BaseModel
         return $this;
     }
 
+    public function get_texture_name() {
+        return $this->texture_name;
+    }
+
+    public function set_texture_name($texture_name) {
+        $texture_name = $this->db_connection->real_escape_string($texture_name);
+        $this->texture_name = $texture_name;
+        return $this;
+    }
+
     public function interpret_request($POST, $FILES) {
+        if (isset($POST['texture_name'])) {
+            $this->set_texture_name($POST['texture_name']);
+        }
         if ($this->get_shader_id()) {
             $this->get_shader()->interpret_request($POST, $FILES)->save();
         }

@@ -1,0 +1,17 @@
+
+<div class="well" style="background-color: #fff;" id="renderpass_{{ renderPass.get_id }}">
+    <a data-toggle="collapse" href="#shader_{{ renderPass.get_shader.get_id }}_wrapper"><h4>{{ renderPass.get_shader.get_name }}</h4></a>
+    <div class="form-group collapse ace-wrapper" id="shader_{{ renderPass.get_shader.get_id }}_wrapper">
+        <label for="id_name_{{ renderPass.get_id }}">Name</label>
+        <input id="id_name_{{ renderPass.get_id }}" type="text" class="form-control" name="name" value="{{ renderPass.get_shader.get_name }}" style="background-color: rgb(39, 40, 34); color: #f7f7f7;">
+        <label for="id_texture_name_{{ renderPass.get_id }}">Texturename</label>
+        <input id="id_texture_name_{{ renderPass.get_id }}" type="text" class="form-control" name="texture_name" value="{{ renderPass.get_texture_name }}" style="background-color: rgb(39, 40, 34); color: #f7f7f7;">
+        <label for="snippet_{{ renderPass.get_shader.get_vertex_id }}">Vertex</label>
+        <div class="resizable resizable_snippet_{{ renderPass.get_shader.get_vertex_id }}"><div id="snippet_{{ renderPass.get_shader.get_vertex_id }}" class="form-control ace_editor vertex" data-mode="glsl"></div></div>
+        <label for="snippet_{{ renderPass.get_shader.get_fragment_id }}">Fragment</label>
+        <div class="resizable resizable_snippet_{{ renderPass.get_shader.get_fragment_id }}"><div id="snippet_{{ renderPass.get_shader.get_fragment_id }}" class="form-control ace_editor fragment" data-mode="glsl"></div></div>
+        <a href="#" class="btn btn-default save-renderpass save" data-id="{{ renderPass.get_id }}">{% _"save" %} (Ctrl-S)</a>
+        <a href="#" class="btn btn-default preview-renderpass preview" data-id="{{ renderPass.get_id }}">{% _"preview" %} (Ctrl-D)</a>
+        <a href="#" class="btn btn-danger delete-render-pass" data-id="{{ renderPass.get_id }}">{% _"delete" %}</a>
+    </div>
+</div>

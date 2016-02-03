@@ -79,6 +79,37 @@
             e.preventDefault();
             init();
         });
+        $('.save-renderpass').off('click').on('click', function(e) {
+            e.preventDefault();
+            var $renderPass = $(this).closest('.ace-wrapper');
+            var data = new FormData();
+            data.append('id', $(this).attr('data-id'));
+            data.append('name', $renderPass.find('[name="name"]').val());
+            data.append('texture_name', $renderPass.find('[name="texture_name"]').val());
+            data.append('vertex_code', editors[$renderPass.find('.vertex').attr('id')].getSession().getValue());
+            data.append('fragment_code', editors[$renderPass.find('.fragment').attr('id')].getSession().getValue());
+            data.append('_method', "PUT");
+            Webapp.api_post('/api/account/renderpass/', data, function(data, successCode, jqXHR) { init(); });
+        });
+        $('.preview-renderpass').off('click').on('click', function(e) {
+            e.preventDefault();
+            var $renderPass = $(this).closest('.ace-wrapper');
+            snippets[$renderPass.find('.vertex').attr('id').split("snippet_")[1]] = editors[$renderPass.find('.vertex').attr('id')].getSession().getValue();
+            snippets[$renderPass.find('.fragment').attr('id').split("snippet_")[1]] = editors[$renderPass.find('.fragment').attr('id')].getSession().getValue();
+
+            for (var i=0 ; i < renderPasses.length; i++) {
+                if (renderPasses[i].id !== undefined && renderPasses[i].id == $(this).attr('data-id')) {
+                    renderPasses[i].material = new THREE.ShaderMaterial({
+                        uniforms: {},
+                        vertexShader: snippets[$renderPass.find('.vertex').attr('id').split("snippet_")[1]],/* vertex_shader */
+                        fragmentShader: snippets[$renderPass.find('.fragment').attr('id').split("snippet_")[1]]/* fragment_shader */
+                    });
+                    renderPasses[i].texture_name = $renderPass.find('[name="texture_name"]').val();
+                }
+            }
+
+            init();
+        });
         $('#add-shader-pass').off('click').on('click', function(e) {
             e.preventDefault();
             var data = new FormData();
@@ -88,9 +119,11 @@
                 var $new_shader = $(data.rendered_html);
                 $('#add-shader-pass').before($new_shader);
                 shaderPasses.push({'id': data.id, 'vertex_id': data.vertex_id,'fragment_id': data.fragment_id});
-                snippets[data.vertex_id] = '';
-                snippets[data.fragment_id] = '';
+                snippets[data.vertex_id] = data.vertex_shader;
+                snippets[data.fragment_id] = data.fragment_shader;
                 Webapp.register_ace_editors();
+                editors['snippet_'+data.vertex_id].getSession().setValue(snippets[+data.vertex_id]);
+                editors['snippet_'+data.fragment_id].getSession().setValue(snippets[data.fragment_id]);
                 Webapp.register_program_btns();
                 $new_shader.find('.preview-shader').click();
                 init();
@@ -111,6 +144,57 @@
                     for (var i = 0; i < shaderPasses.length; i++) {
                         if (shaderPasses[i].id == id) {
                             shaderPasses.splice(i, 1);
+                            break;
+                        }
+                    }
+                    init();
+                });
+                $modal.modal('hide');
+            });
+        });
+        $('#add-render-pass').off('click').on('click', function(e) {
+            e.preventDefault();
+            var data = new FormData();
+            data.append('program_id', $(this).attr('data-program-id'));
+            data.append('_method', "POST");
+            Webapp.api_post('/api/account/renderpass/', data, function(data, successCode, jqXHR) {
+                var $new_shader = $(data.rendered_html);
+                $('#add-render-pass').before($new_shader);
+                snippets[data.vertex_id] = data.vertex_shader;
+                snippets[data.fragment_id] = data.fragment_shader;
+                renderPasses.push({'scene': new THREE.Scene(),
+                    'id': data.id,
+                    'material': new THREE.ShaderMaterial({
+                        uniforms: {},
+                        vertexShader: snippets[data.vertex_id],/* vertex_shader */
+                        fragmentShader: snippets[data.fragment_id]/* fragment_shader */
+                    }),
+                    'render_target': new THREE.WebGLRenderTarget( window.innerWidth/2, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat } ),
+                    'texture_name': data.texture_name
+                });
+                Webapp.register_ace_editors();
+                editors['snippet_'+data.vertex_id].getSession().setValue(snippets[+data.vertex_id]);
+                editors['snippet_'+data.fragment_id].getSession().setValue(snippets[data.fragment_id]);
+                Webapp.register_program_btns();
+                $new_shader.find('.preview-shader').click();
+                init();
+            });
+        });
+        $('.delete-render-pass').off('click').on('click', function(e) {
+            e.preventDefault();
+            var id = $(this).attr('data-id');
+            var $modal = $('#delete-modal');
+            $modal.modal('show');
+            $modal.find('.confirm-delete').off('click').on('click', function(e) {
+                e.preventDefault();
+                var data = new FormData();
+                data.append('id', id);
+                data.append('_method', "DELETE");
+                Webapp.api_post('/api/account/renderpass/', data, function(data, successCode, jqXHR) {
+                    $('#renderpass_'+id).remove();
+                    for (var i = 0; i < renderPasses.length; i++) {
+                        if (renderPasses[i].id == id) {
+                            renderPasses.splice(i, 1);
                             break;
                         }
                     }
@@ -170,4 +254,19 @@ $(document).lareAlways(function() {
             return false;
         }
     });
+    try {
+        initOnce();
+
+        for (var key in snippets) {
+            if (snippets.hasOwnProperty(key)) {
+                $('#snippet_'+key).val(snippets[key]);
+                editors['snippet_'+key].getSession().setValue(snippets[key]);
+            }
+        }
+
+        init();
+        animate();
+    } catch (Exception) {
+
+    }
 });
