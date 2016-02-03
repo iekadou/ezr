@@ -61,20 +61,6 @@
                 </div>
                 <div class="col-xs-12">
                     <div class="well">
-                        <a data-toggle="collapse" href="#shader_{{ Program.get_material.get_id }}_wrapper"><h4>Material</h4></a>
-                        <div class="form-group ace-wrapper collapse in" id="shader_{{ Program.get_material.get_id }}_wrapper">
-                            <input type="text" class="form-control" name="name" value="{{ Program.get_material.get_name }}" style="background-color: rgb(39, 40, 34); color: #f7f7f7;">
-                            <label for="snippet_{{ Program.get_material.get_vertex_id }}">Vertex</label>
-                            <div class="resizable resizable_snippet_{{ Program.get_material.get_vertex_id }}"><div id="snippet_{{ Program.get_material.get_vertex_id }}" class="form-control ace_editor vertex" data-mode="glsl"></div></div>
-                            <label for="snippet_{{ Program.get_material.get_vertex_id }}">Fragment</label>
-                            <div class="resizable resizable_snippet_{{ Program.get_material.get_fragment_id }}"><div id="snippet_{{ Program.get_material.get_fragment_id }}" class="form-control ace_editor fragment" data-mode="glsl"></div></div>
-                            <a href="#" class="btn btn-default save-shader save" data-id="{{ Program.get_material.get_id }}">{% _"save" %} (Ctrl-S)</a>
-                            <a href="#" class="btn btn-default preview-shader preview">{% _"preview" %} (Ctrl-D)</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xs-12">
-                    <div class="well">
                         <a data-toggle="collapse" href="#postprocessing"><h4>Postprocessing</h4></a>
                         <div class="shaderpasses collapse" id="postprocessing">
                             {% for shaderPass in Program.get_shader_passes %}
@@ -113,61 +99,9 @@
         function initOnce() {
             container = document.getElementById( 'render_plane' );
 
-            camera = new THREE.PerspectiveCamera( 40, (window.innerWidth/2) / window.innerHeight, 1, 3000 );
-            camera.position.z = 3;
-            renderPasses.push({'scene': new THREE.Scene(), 'material': new THREE.ShaderMaterial({
-                uniforms: {},
-                vertexShader: snippets[{{ Program.get_material.get_vertex.get_id }}],/* vertex_shader */
-                fragmentShader: snippets[{{ Program.get_material.get_fragment.get_id }}]/* fragment_shader */
-            }), 'render_target': null, 'texture_name': 'tDiffuse'});
-            {% for renderPass in Program.get_render_passes %}
-                renderPasses.push({
-                    'id': '{{ renderPass.get_id }}',
-                    'scene': new THREE.Scene(),
-                    'material': new THREE.ShaderMaterial({
-                        uniforms: {},
-                        vertexShader: snippets[{{ renderPass.get_shader.get_vertex_id }}],/* vertex_shader */
-                        fragmentShader: snippets[{{ renderPass.get_shader.get_fragment_id }}]/* fragment_shader */
-                    }),
-                    'render_target': new THREE.WebGLRenderTarget( window.innerWidth/2, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat } ),
-                    'texture_name': '{{ renderPass.get_texture_name }}'
-            });
-            {% endfor %}
-
-            renderPasses.push({'scene': new THREE.Scene(), 'material': new THREE.ShaderMaterial( {
-                uniforms: {},
-                vertexShader: ["varying vec3 vNormal;",
-                    "void main() {",
-                    "    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
-                    "    vNormal = normalize( normalMatrix * normal );",
-                    "}"].join('\n'),
-                fragmentShader: ["varying vec3 vNormal;",
-                    "",
-                    "void main() {",
-                    "gl_FragColor = vec4(vNormal, 1.0 );",
-                    "",
-                    "}"].join('\n')
-            }), 'render_target': new THREE.WebGLRenderTarget( window.innerWidth/2, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat } ), 'texture_name': 'tNormals'});
-
-            renderPasses.push({'scene': new THREE.Scene(), 'material': new THREE.ShaderMaterial({
-                uniforms: {},
-                vertexShader: ["varying vec4 vViewPosition;",
-                    "void main() {",
-                    "    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
-                    "    vViewPosition = gl_Position;",
-                    "}"].join('\n'),
-                fragmentShader: ["varying vec4 vViewPosition;",
-                    "void main() {",
-                    "float depth = 1.0-vViewPosition.z/vViewPosition.w;",
-                    "gl_FragColor = vec4(depth, depth, depth, 1.0);",
-                    "}"].join('\n')
-            }), 'render_target': new THREE.WebGLRenderTarget( window.innerWidth/2, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat } ), 'texture_name': 'tDepth'});
-
 
             snippets[{{ Program.get_render.get_id }}] = `{{ Program.get_render.get_code|raw }}`;
             snippets[{{ Program.get_init.get_id }}] = `{{ Program.get_init.get_code|raw }}`;
-            snippets[{{ Program.get_material.get_vertex.get_id }}] = `{{ Program.get_material.get_vertex.get_code|raw }}`;
-            snippets[{{ Program.get_material.get_fragment.get_id }}] = `{{ Program.get_material.get_fragment.get_code|raw }}`;
             {% for shaderPass in Program.get_shader_passes %}
                 snippets[{{ shaderPass.get_shader.get_vertex_id }}] = `{{ shaderPass.get_shader.get_vertex.get_code|raw }}`;
             snippets[{{ shaderPass.get_shader.get_fragment_id }}] = `{{ shaderPass.get_shader.get_fragment.get_code|raw }}`;
@@ -176,6 +110,58 @@
                 snippets[{{ renderPass.get_shader.get_vertex_id }}] = `{{ renderPass.get_shader.get_vertex.get_code|raw }}`;
             snippets[{{ renderPass.get_shader.get_fragment_id }}] = `{{ renderPass.get_shader.get_fragment.get_code|raw }}`;
             {% endfor %}
+
+            camera = new THREE.PerspectiveCamera( 40, (window.innerWidth/2) / window.innerHeight, 1, 3000 );
+            camera.position.z = 3;
+
+            {% for renderPass in Program.get_render_passes %}
+                renderPasses.push({
+                    id: '{{ renderPass.get_id }}',
+                    scene: new THREE.Scene(),
+                    material: new THREE.ShaderMaterial({
+                        uniforms: {},
+                        vertexShader: snippets[{{ renderPass.get_shader.get_vertex_id }}],/* vertex_shader */
+                        fragmentShader: snippets[{{ renderPass.get_shader.get_fragment_id }}]/* fragment_shader */
+                    }),
+                    render_target: new THREE.WebGLRenderTarget( window.innerWidth/2, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat } ),
+                    texture_name: '{{ renderPass.get_texture_name }}'
+                });
+            {% endfor %}
+
+            renderPasses.push({'scene': new THREE.Scene(),
+                material: new THREE.ShaderMaterial( {
+                    uniforms: {},
+                    vertexShader: ["varying vec3 vNormal;",
+                        "void main() {",
+                        "    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+                        "    vNormal = normalize( normalMatrix * normal );",
+                        "}"].join('\n'),
+                    fragmentShader: ["varying vec3 vNormal;",
+                        "",
+                        "void main() {",
+                        "gl_FragColor = vec4(vNormal, 1.0 );",
+                        "",
+                        "}"].join('\n')
+                }),
+                render_target: new THREE.WebGLRenderTarget( window.innerWidth/2, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat } ),
+                texture_name: 'tNormals'});
+
+            renderPasses.push({'scene': new THREE.Scene(),
+                material: new THREE.ShaderMaterial({
+                    uniforms: {},
+                    vertexShader: ["varying vec4 vViewPosition;",
+                        "void main() {",
+                        "    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+                        "    vViewPosition = gl_Position;",
+                        "}"].join('\n'),
+                    fragmentShader: ["varying vec4 vViewPosition;",
+                        "void main() {",
+                        "float depth = 1.0-vViewPosition.z/vViewPosition.w;",
+                        "gl_FragColor = vec4(depth, depth, depth, 1.0);",
+                        "}"].join('\n')
+                }),
+                render_target: new THREE.WebGLRenderTarget( window.innerWidth/2, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat } ),
+                texture_name: 'tDepth'});
         }
 
         function init() {
@@ -195,10 +181,10 @@
             uniforms.hatch3 = { type: 't', value: THREE.ImageUtils.loadTexture( '/static/img/textures/hatch3.png' ) };
             uniforms.hatch4 = { type: 't', value: THREE.ImageUtils.loadTexture( '/static/img/textures/hatch4.png' ) };
             uniforms.hatch5 = { type: 't', value: THREE.ImageUtils.loadTexture( '/static/img/textures/hatch5.png' ) };
+            uniforms.tDiffuse = { type: "t", value: null };
 
             for (var i=0; i < renderPasses.length; i++) {
                 uniforms[renderPasses[i].texture_name] = { type: "t", value: renderPasses[i].render_target };
-                console.log(renderPasses[i].texture_name);
             }
 
             for (var i=0; i < renderPasses.length; i++) {
@@ -249,7 +235,7 @@
             camera.aspect = (window.innerWidth/2) / window.innerHeight;
             camera.updateProjectionMatrix();
 
-            for (var i=1; i < renderPasses.length; i++) {
+            for (var i=0; i < renderPasses.length; i++) {
                 renderPasses[i].render_target.setSize( window.innerWidth/2, window.innerHeight );
             }
             renderer.setSize( window.innerWidth/2, window.innerHeight );
@@ -282,7 +268,7 @@
             eval(snippets[render_id]);
             /* END PROGRAM RENDER PART */
 
-            for (var i=1; i < renderPasses.length; i++) {
+            for (var i=0; i < renderPasses.length; i++) {
                 renderer.render( renderPasses[i].scene, camera, renderPasses[i].render_target, true );
             }
 

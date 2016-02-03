@@ -41,26 +41,6 @@ class Program extends BaseModel
         return $this;
     }
 
-    public function get_material_id() {
-        return $this->material_id;
-    }
-
-    public function set_material_id($material_id) {
-        $this->material_id = $material_id;
-        return $this;
-    }
-
-    public function get_material() {
-        $Shader = new Shader();
-        $Shader = $Shader->get($this->get_material_id());
-        if (!$Shader) {
-            $Shader = new Shader();
-            $Shader = $Shader->set_userid($this->get_userid())->set_name('material - '.$this->get_name())->create();
-            $this->set_material_id($Shader->get_id())->save();
-        }
-        return $Shader;
-    }
-
     public function get_init_id() {
         return $this->init_id;
     }

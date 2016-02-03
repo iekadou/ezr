@@ -44,7 +44,7 @@ try {
             }
             $RenderPass = $RenderPass->set_userid(Account::get_user_id());
             try { $RenderPass = $RenderPass->set_program_id($Program->get_id()); } catch (ValidationError $e) { echo $e->stringify(); die(); }
-            $RenderPass->get_shader()->sample_material()->save();
+            $RenderPass->set_texture_name('tDiffuse')->get_shader()->sample_material()->save();
             if ($RenderPass->create()) {
                 new View('', '', '_include/_render_pass.html');
                 View::set_template_var('renderPass', $RenderPass);
