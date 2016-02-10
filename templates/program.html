@@ -176,11 +176,17 @@
             uniforms.resolution = { type: "v2", value: new THREE.Vector2() };
             uniforms.time = { type: "f", value: 1.0 };
             uniforms.hatch0 = { type: 't', value: THREE.ImageUtils.loadTexture( '/static/img/textures/hatch0.png' ) };
+            uniforms.hatch0.value.wrapS = uniforms.hatch0.value.wrapT = THREE.RepeatWrapping;
             uniforms.hatch1 = { type: 't', value: THREE.ImageUtils.loadTexture( '/static/img/textures/hatch1.png' ) };
+            uniforms.hatch1.value.wrapS = uniforms.hatch1.value.wrapT = THREE.RepeatWrapping;
             uniforms.hatch2 = { type: 't', value: THREE.ImageUtils.loadTexture( '/static/img/textures/hatch2.png' ) };
+            uniforms.hatch2.value.wrapS = uniforms.hatch2.value.wrapT = THREE.RepeatWrapping;
             uniforms.hatch3 = { type: 't', value: THREE.ImageUtils.loadTexture( '/static/img/textures/hatch3.png' ) };
+            uniforms.hatch3.value.wrapS = uniforms.hatch3.value.wrapT = THREE.RepeatWrapping;
             uniforms.hatch4 = { type: 't', value: THREE.ImageUtils.loadTexture( '/static/img/textures/hatch4.png' ) };
+            uniforms.hatch4.value.wrapS = uniforms.hatch4.value.wrapT = THREE.RepeatWrapping;
             uniforms.hatch5 = { type: 't', value: THREE.ImageUtils.loadTexture( '/static/img/textures/hatch5.png' ) };
+            uniforms.hatch5.value.wrapS = uniforms.hatch5.value.wrapT = THREE.RepeatWrapping;
             uniforms.tDiffuse = { type: "t", value: null };
 
             for (var i=0; i < renderPasses.length; i++) {
