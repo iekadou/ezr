@@ -48,7 +48,7 @@ try {
             if ($ShaderPass->create()) {
                 new View('', '', '_include/_shader_pass.html');
                 View::set_template_var('shaderPass', $ShaderPass);
-                echo '{"id": "'.$ShaderPass->get_id().'", "vertex_id": "'.$ShaderPass->get_shader()->get_vertex_id().'", "fragment_id": "'.$ShaderPass->get_shader()->get_fragment_id().'", fragment_shader": '.json_encode(utf8_encode($ShaderPass->get_shader()->get_fragment()->get_code())).', "vertex_shader": '.json_encode(utf8_encode($ShaderPass->get_shader()->get_vertex()->get_code())).', "rendered_html": '.json_encode(utf8_encode(View::render($display=false))).'}';
+                echo '{"id": "'.$ShaderPass->get_id().'", "vertex_id": "'.$ShaderPass->get_shader()->get_vertex_id().'", "fragment_id": "'.$ShaderPass->get_shader()->get_fragment_id().'", "fragment_shader": '.json_encode(utf8_encode($ShaderPass->get_shader()->get_fragment()->get_code())).', "vertex_shader": '.json_encode(utf8_encode($ShaderPass->get_shader()->get_vertex()->get_code())).', "rendered_html": '.json_encode(utf8_encode(View::render($display=false))).'}';
                 die();
             }
             break;
