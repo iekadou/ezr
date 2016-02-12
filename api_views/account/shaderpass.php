@@ -44,7 +44,7 @@ try {
             }
             $ShaderPass = $ShaderPass->set_userid(Account::get_user_id());
             try { $ShaderPass = $ShaderPass->set_program_id($Program->get_id()); } catch (ValidationError $e) { echo $e->stringify(); die(); }
-            $ShaderPass->get_shader()->sample_post_processing()->save();
+            $ShaderPass->get_shader()->set_userid(Account::get_user_id())->sample_post_processing()->save();
             if ($ShaderPass->create()) {
                 new View('', '', '_include/_shader_pass.html');
                 View::set_template_var('shaderPass', $ShaderPass);
