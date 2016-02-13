@@ -91,6 +91,9 @@ class Texture extends BaseModel
             } else {
                 $image = null;
             }
+            if ($this->get_img()) {
+                unlink(PATH.$this->get_img());
+            }
             $this->set_img($image);
         }
         $this->set_name($POST['name']);
