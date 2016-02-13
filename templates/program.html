@@ -14,6 +14,10 @@
                             <option value="sphere" {% if Program.get_object_type_display == 'sphere' %}selected{% endif %}>{% _"Sphere" %}</option>
                             <option value="cube" {% if Program.get_object_type_display == 'cube' %}selected{% endif %}>{% _"Cube" %}</option>
                             <option value="teapot" {% if Program.get_object_type_display == 'teapot' %}selected{% endif %}>{% _"Teapot" %}</option>
+                            <option value="tyra" {% if Program.get_object_type_display == 'tyra' %}selected{% endif %}>{% _"Tyranosaurus" %}</option>
+                            <option value="armadillo" {% if Program.get_object_type_display == 'armadillo' %}selected{% endif %}>{% _"Armadillo" %}</option>
+                            <option value="bunny" {% if Program.get_object_type_display == 'bunny' %}selected{% endif %}>{% _"Bunny" %}</option>
+                            <option value="dragon" {% if Program.get_object_type_display == 'dragon' %}selected{% endif %}>{% _"Dragon" %}</option>
                         </select>
                         <a href="#" class="btn btn-default save-program save" data-id="{{ Program.get_id }}">{% _"save" %} (Ctrl-S)</a>
                         <a href="#" class="btn btn-default preview-program preview">{% _"preview" %} (Ctrl-D)</a>
@@ -163,7 +167,36 @@
                 render_target: new THREE.WebGLRenderTarget( window.innerWidth/2, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat } ),
                 texture_name: 'tDepth'});
         }
+        function loadOBJModel(modelName, scaleFactor) {
+            var manager = new THREE.LoadingManager();
+            manager.onProgress = function ( item, loaded, total ) {
+                console.log( item, loaded, total );
+            };
+            manager.onError = function ( item, loaded, total ) {
+                console.log( item, loaded, total );
+            };
 
+            var loader = new THREE.OBJLoader( manager );
+            loader.load( '/static/obj/'+modelName+'.obj', function ( object ) {
+
+                for (var i=0; i < renderPasses.length; i++) {
+                    object.traverse( function ( child ) {
+
+                        if ( child instanceof THREE.Mesh ) {
+                            child.material = renderPasses[i].material;
+                            child.material.side = THREE.DoubleSide;
+                        }
+
+                    });
+                    object.scale.x = scaleFactor;
+                    object.scale.y = scaleFactor;
+                    object.scale.z = scaleFactor;
+                    //object.position.z = -100;
+                    renderPasses[i].scene.add(object.clone());
+                }
+
+            }, loader.onProgress, loader.onError );
+        }
         function init() {
 
             container = document.getElementById( 'render_plane' );
@@ -198,7 +231,10 @@
             }
 
             var geometry;
-            geometry_selection = $('#object_type').val();
+            for (var i = 0; i < renderPasses.length; i++) {
+                renderPasses[i].scene = new THREE.Scene();
+            }
+            var geometry_selection = $('#object_type').val();
             switch (geometry_selection) {
                 case 'sphere':
                     geometry = new THREE.SphereGeometry( 0.5, 32, 32 );
@@ -212,13 +248,25 @@
                 case 'cube':
                     geometry = new THREE.BoxGeometry( 1, 1, 1 );
                     break;
+                case 'tyra':
+                    loadOBJModel('tyra', 1);
+                    break;
+                case 'armadillo':
+                    loadOBJModel('armadillo', 1);
+                    break;
+                case 'bunny':
+                    loadOBJModel('bunny', 1);
+                    break;
+                case 'dragon':
+                    loadOBJModel('dragon', 1);
+                    break;
                 default:
                     geometry = new THREE.TorusKnotGeometry( 0.3, 0.1, 1000, 54 );
             }
-
-            for (var i=0; i < renderPasses.length; i++) {
-                renderPasses[i].scene = new THREE.Scene();
-                renderPasses[i].scene.add(new THREE.Mesh( geometry, renderPasses[i].material ));
+            if (geometry_selection != 'bunny' && geometry_selection != 'tyra' && geometry_selection != 'armadillo' && geometry_selection != 'dragon') {
+                for (var i = 0; i < renderPasses.length; i++) {
+                    renderPasses[i].scene.add(new THREE.Mesh(geometry, renderPasses[i].material));
+                }
             }
 
             renderer = new THREE.WebGLRenderer({logarithmicDepthBuffer: true });

@@ -8,8 +8,8 @@ class Program extends BaseModel
     protected $table = 'program';
     protected $fields = array('userid', 'name', 'init_id', 'render_id', 'material_id', 'object_type');
 
-    public static $ObjectTypes = array('cube'=>1, 'sphere'=>2, 'torus'=>3, 'teapot'=>4);
-    public static $ObjectTypeNames = array(1=>'cube', 2=>'sphere',3=>'torus',4=>'teapot');
+    public static $ObjectTypes = array('cube'=>1, 'sphere'=>2, 'torus'=>3, 'teapot'=>4, 'tyra'=>5, 'armadillo'=>6, 'bunny'=>7, 'dragon'=>8);
+    public static $ObjectTypeNames = array(1=>'cube', 2=>'sphere', 3=>'torus', 4=>'teapot', 5=>'tyra', 6=>'armadillo', 7=>'bunny', 8=>'dragon');
 
     public function get_object_type() {
         return $this->object_type;
