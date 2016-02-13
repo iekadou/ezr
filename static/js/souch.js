@@ -255,6 +255,7 @@
             'texture_name': data.name,
             'img': data.img
         });
+        Webapp.register_api_forms();
         Webapp.register_program_btns();
     };
 
