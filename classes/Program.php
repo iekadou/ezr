@@ -116,4 +116,9 @@ class Program extends BaseModel
         return $ShaderPass->filter_by(array(array('program_id', '=', $this->id)));
     }
 
+    public function get_textures() {
+        $Texture = new Texture();
+        return $Texture->filter_by(array(array('program_id', '=', $this->id)));
+    }
+
 }

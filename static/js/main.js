@@ -82,12 +82,12 @@
                     callback(data, successCode, jqXHR);
                 }
                 if ($form !== undefined) {
-                    Webapp.resolveMethodName($form.attr('successCallback'))();
+                    Webapp.resolveMethodName($form.attr('successCallback'))(data, successCode, jqXHR);
                 }
             },
             error: function (jqXHR, errorCode, errorThrown) {
                 if ($form !== undefined) {
-                    Webapp.resolveMethodName($form.attr('errorCallback'))();
+                    Webapp.resolveMethodName($form.attr('errorCallback'))(jqXHR, errorCode, errorThrown);
                 }
                 toastr.error(Webapp.error_label, Webapp.error_title, Webapp.toastr_opts);
             },

@@ -152,6 +152,30 @@
                 $modal.modal('hide');
             });
         });
+        $('.btn-delete-texture').off('click').on('click', function(e) {
+            e.preventDefault();
+            var id = $(this).attr('data-id');
+            var $modal = $('#delete-modal');
+            $modal.modal('show');
+            $modal.find('.confirm-delete').off('click').on('click', function(e) {
+                e.preventDefault();
+                var data = new FormData();
+                data.append('id', id);
+                data.append('_method', "DELETE");
+                Webapp.api_post('/api/account/texture/', data, function(data, successCode, jqXHR) {
+                    $('#texture_wrapper_'+id).remove();
+                    for (var i = 0; i < textures.length; i++) {
+                        if (textures[i].id == id) {
+                            textures.splice(i, 1);
+                            break;
+                        }
+                    }
+                    init();
+                });
+                $modal.modal('hide');
+            });
+        });
+
         $('#add-render-pass').off('click').on('click', function(e) {
             e.preventDefault();
             var data = new FormData();
@@ -223,6 +247,27 @@
             e.preventDefault();
             init();
         });
+    };
+
+    Webapp.interpretNewTexture = function(data, successCode, jqXHR) {
+        $('#textures_wrapper').append(data.rendered_html);
+        textures.push({'id': data.id,
+            'texture_name': data.name,
+            'img': data.img
+        });
+        Webapp.register_program_btns();
+    };
+
+    Webapp.interpretUpdatedTexture = function(data, successCode, jqXHR) {
+        var $wrapper = $('#texture_wrapper_'+data.id);
+        if (data.img) { $wrapper.find('img').attr('src', data.img); }
+        for (var i = 0; i < textures.length; i++) {
+            if (textures[i].id == data.id) {
+                textures[i].texture_name = data.name;
+                textures[i].img = data.img;
+                break;
+            }
+        }
     };
 
 }(window.Webapp = window.Webapp || {}, jQuery));

@@ -39,6 +39,7 @@ require_once(PATH."classes/Shader.php");
 require_once(PATH."classes/ShaderPass.php");
 require_once(PATH."classes/RenderPass.php");
 require_once(PATH."classes/Snippet.php");
+require_once(PATH."classes/Texture.php");
 require_once(PATH."classes/Files.php");
 require_once(PATH."classes/ValidationError.php");
 require_once(PATH."classes/Migration.php");
