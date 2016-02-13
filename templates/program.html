@@ -100,9 +100,10 @@
         var program_id = {{ Program.get_id }};
         var render_id = {{ Program.get_render.get_id }};
         var init_id = {{ Program.get_init.get_id }};
+        var manager = new THREE.LoadingManager();
+        var textureLoader = new THREE.TextureLoader();
         function initOnce() {
             container = document.getElementById( 'render_plane' );
-
 
             snippets[{{ Program.get_render.get_id }}] = `{{ Program.get_render.get_code|raw }}`;
             snippets[{{ Program.get_init.get_id }}] = `{{ Program.get_init.get_code|raw }}`;
@@ -168,7 +169,6 @@
                 texture_name: 'tDepth'});
         }
         function loadOBJModel(modelName, scaleFactor) {
-            var manager = new THREE.LoadingManager();
             manager.onProgress = function ( item, loaded, total ) {
                 console.log( item, loaded, total );
             };
@@ -176,8 +176,8 @@
                 console.log( item, loaded, total );
             };
 
-            var loader = new THREE.OBJLoader( manager );
-            loader.load( '/static/obj/'+modelName+'.obj', function ( object ) {
+            var obj_loader = new THREE.OBJLoader( manager );
+            obj_loader.load( '/static/obj/'+modelName+'.obj', function ( object ) {
 
                 for (var i=0; i < renderPasses.length; i++) {
                     object.traverse( function ( child ) {
@@ -195,7 +195,7 @@
                     renderPasses[i].scene.add(object.clone());
                 }
 
-            }, loader.onProgress, loader.onError );
+            }, obj_loader.onProgress, obj_loader.onError );
         }
         function init() {
 
@@ -208,17 +208,17 @@
 
             uniforms.resolution = { type: "v2", value: new THREE.Vector2() };
             uniforms.time = { type: "f", value: 1.0 };
-            uniforms.hatch0 = { type: 't', value: THREE.ImageUtils.loadTexture( '/static/img/textures/hatch0.png' ) };
+            uniforms.hatch0 = { type: 't', value: textureLoader.load( '/static/img/textures/hatch0.png' ) };
             uniforms.hatch0.value.wrapS = uniforms.hatch0.value.wrapT = THREE.RepeatWrapping;
-            uniforms.hatch1 = { type: 't', value: THREE.ImageUtils.loadTexture( '/static/img/textures/hatch1.png' ) };
+            uniforms.hatch1 = { type: 't', value: textureLoader.load( '/static/img/textures/hatch1.png' ) };
             uniforms.hatch1.value.wrapS = uniforms.hatch1.value.wrapT = THREE.RepeatWrapping;
-            uniforms.hatch2 = { type: 't', value: THREE.ImageUtils.loadTexture( '/static/img/textures/hatch2.png' ) };
+            uniforms.hatch2 = { type: 't', value: textureLoader.load( '/static/img/textures/hatch2.png' ) };
             uniforms.hatch2.value.wrapS = uniforms.hatch2.value.wrapT = THREE.RepeatWrapping;
-            uniforms.hatch3 = { type: 't', value: THREE.ImageUtils.loadTexture( '/static/img/textures/hatch3.png' ) };
+            uniforms.hatch3 = { type: 't', value: textureLoader.load( '/static/img/textures/hatch3.png' ) };
             uniforms.hatch3.value.wrapS = uniforms.hatch3.value.wrapT = THREE.RepeatWrapping;
-            uniforms.hatch4 = { type: 't', value: THREE.ImageUtils.loadTexture( '/static/img/textures/hatch4.png' ) };
+            uniforms.hatch4 = { type: 't', value: textureLoader.load( '/static/img/textures/hatch4.png' ) };
             uniforms.hatch4.value.wrapS = uniforms.hatch4.value.wrapT = THREE.RepeatWrapping;
-            uniforms.hatch5 = { type: 't', value: THREE.ImageUtils.loadTexture( '/static/img/textures/hatch5.png' ) };
+            uniforms.hatch5 = { type: 't', value: textureLoader.load( '/static/img/textures/hatch5.png' ) };
             uniforms.hatch5.value.wrapS = uniforms.hatch5.value.wrapT = THREE.RepeatWrapping;
             uniforms.tDiffuse = { type: "t", value: null };
 
@@ -229,7 +229,7 @@
             for (var i=0; i < renderPasses.length; i++) {
                 renderPasses[i].material.uniforms = uniforms;
             }
-
+            console.log(uniforms);
             var geometry;
             for (var i = 0; i < renderPasses.length; i++) {
                 renderPasses[i].scene = new THREE.Scene();
@@ -297,7 +297,20 @@
             composer = new THREE.EffectComposer( renderer );
             composer.addPass( new THREE.RenderPass( renderPasses[0].scene, camera ) );
             for (var i = 0; i < shaderPasses.length; i++) {
-                composer.addPass(new THREE.ShaderPass({ uniforms: uniforms, vertexShader: snippets[shaderPasses[i].vertex_id], fragmentShader: snippets[shaderPasses[i].fragment_id] }));
+                var shaderpass = new THREE.ShaderPass({ uniforms: uniforms, vertexShader: snippets[shaderPasses[i].vertex_id], fragmentShader: snippets[shaderPasses[i].fragment_id] });
+                shaderpass.material.uniforms.hatch0.value = textureLoader.load( '/static/img/textures/hatch0.png' );
+                shaderpass.material.uniforms.hatch0.value.wrapS = shaderpass.material.uniforms.hatch0.value.wrapT = THREE.RepeatWrapping;
+                shaderpass.material.uniforms.hatch1.value = textureLoader.load( '/static/img/textures/hatch1.png' );
+                shaderpass.material.uniforms.hatch1.value.wrapS = shaderpass.material.uniforms.hatch1.value.wrapT = THREE.RepeatWrapping;
+                shaderpass.material.uniforms.hatch2.value = textureLoader.load( '/static/img/textures/hatch2.png' );
+                shaderpass.material.uniforms.hatch2.value.wrapS = shaderpass.material.uniforms.hatch2.value.wrapT = THREE.RepeatWrapping;
+                shaderpass.material.uniforms.hatch3.value = textureLoader.load( '/static/img/textures/hatch3.png' );
+                shaderpass.material.uniforms.hatch3.value.wrapS = shaderpass.material.uniforms.hatch3.value.wrapT = THREE.RepeatWrapping;
+                shaderpass.material.uniforms.hatch4.value = textureLoader.load( '/static/img/textures/hatch4.png' );
+                shaderpass.material.uniforms.hatch4.value.wrapS = shaderpass.material.uniforms.hatch4.value.wrapT = THREE.RepeatWrapping;
+                shaderpass.material.uniforms.hatch5.value = textureLoader.load( '/static/img/textures/hatch5.png' );
+                shaderpass.material.uniforms.hatch5.value.wrapS = shaderpass.material.uniforms.hatch5.value.wrapT = THREE.RepeatWrapping;
+                composer.addPass(shaderpass);
             }
             var effect = new THREE.ShaderPass( THREE.CopyShader );
             effect.renderToScreen = true;
