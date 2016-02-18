@@ -271,6 +271,52 @@
         }
     };
 
+    Webapp.register_popovers = function() {
+        var variable_str = '';
+        variable_str += '<strong>Uniforms:</strong><br>';
+        for (var key in uniforms) {
+            if (uniforms.hasOwnProperty(key)) {
+                variable_str += '// uniform ';
+                switch (uniforms[key].type) {
+                    case 'f':
+                        variable_str += 'float';
+                        break;
+                    case 'i':
+                        variable_str += 'int';
+                        break;
+                    case 'v2':
+                        variable_str += 'vec2';
+                        break;
+                    case 'v3':
+                        variable_str += 'vec3';
+                        break;
+                    case 'v4':
+                        variable_str += 'vec4';
+                        break;
+                    case 't':
+                        variable_str += 'sampler2D';
+                        break;
+                    case 'c':
+                        variable_str += 'vec3';
+                        break;
+                    // TODO to be continued
+                }
+                variable_str += ' ' + key+ ';<br>';
+            }
+        }
+        variable_str += '<strong>Vertex:</strong><br>';
+
+        variable_str += '// attribute vec3 position;<br>';
+        variable_str += '// attribute vec3 normal;<br>';
+        variable_str += '// attribute vec2 uv;<br>';
+        variable_str += '// attribute vec2 uv2;<br>';
+        variable_str += '<strong>Fragment:</strong><br>';
+
+        variable_str += '// attribute vec4 gl_FragCoord;<br>';
+        $('[data-toggle="popover"]').attr('data-content', variable_str);
+        $('[data-toggle="popover"]').popover();
+    };
+
 }(window.Webapp = window.Webapp || {}, jQuery));
 
 $(document).lareAlways(function() {
@@ -284,6 +330,7 @@ $(document).lareAlways(function() {
     //$('.shaderpasses').sortable();
     Webapp.register_ace_editors();
     Webapp.register_api_forms();
+    Webapp.register_popovers();
     $(document).keydown(function(event) {
         // CMD / CTRL + S
         if((event.ctrlKey || event.metaKey) && event.which == 83) {

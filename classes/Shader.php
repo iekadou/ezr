@@ -69,57 +69,31 @@ class Shader extends BaseModel
     }
 
     public function sample_material() {
-        $this->get_fragment()->set_code('// Predefined uniforms:
-// uniform mat4 viewMatrix;
-// uniform vec3 cameraPosition;
-
-varying vec3 world_position;
+        $this->get_fragment()->set_code('varying vec3 vWorldPosition;
 
 void main(void) {
-    gl_FragColor = vec4( world_position.x, world_position.y, world_position.z, 1.0 );
+    gl_FragColor = vec4( vWorldPosition.x, vWorldPosition.y, vWorldPosition.z, 1.0 );
 }
 ')->save();
-        $this->get_vertex()->set_code('// Predefined uniforms:
-// uniform mat4 modelMatrix;
-// uniform mat4 modelViewMatrix;
-// uniform mat4 projectionMatrix;
-// uniform mat4 viewMatrix;
-// uniform mat3 normalMatrix;
-// uniform vec3 cameraPosition;
-// uniform vec2 resolution;
-// uniform float time;
-
-// Available attributes
-// attribute vec3 position;
-// attribute vec3 normal;
-// attribute vec2 uv;
-// attribute vec2 uv2;
-
-varying vec3 world_position;
+        $this->get_vertex()->set_code('varying vec3 vWorldPosition;
 
 void main() {
     gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-    world_position = position + 0.5;
+    vWorldPosition = position + 0.5;
 }
 ')->save();
         return $this;
     }
 
     public function sample_post_processing() {
-        $this->get_vertex()->set_code('// Predefined uniforms:
-//uniform sampler2D tDiffuse;
-//uniform sampler2D tDiffuse;
-varying vec2 vUv;
+        $this->get_vertex()->set_code('varying vec2 vUv;
+
 void main() {
     vUv = uv;
     gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 }')->save();
-        $this->get_fragment()->set_code('// Predefined uniforms:
-// uniform mat4 viewMatrix;
-// uniform vec3 cameraPosition;
-// uniform sampler2D tDiffuse;
+        $this->get_fragment()->set_code('uniform sampler2D tDiffuse;
 
-uniform sampler2D tDiffuse;
 varying vec2 vUv;
 void main() {
     vec4 texel = texture2D(tDiffuse , vUv );

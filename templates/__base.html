@@ -60,6 +60,7 @@
                     <li {% if site == 'structure' %}class="active"{% endif %}><a href="{% url 'program' '1' %}">{% _"Aufbau" %}</a></li>
                     <li {% if site == 'shader' %}class="active"{% endif %}><a href="{% url 'presentation' 'shader' %}">{% _"Shader" %}</a></li>
                     <li {% if site == 'remarks' %}class="active"{% endif %}><a href="{% url 'presentation' 'remarks' %}">{% _"Remarks" %}</a></li>
+                    <li {% if site == 'sources' %}class="active"{% endif %}><a href="{% url 'presentation' 'sources' %}">{% _"Sources" %}</a></li>
                 </ul>
                 <ul id="webapp-navbar" class="nav navbar-nav navbar-collapse collapse navbar-right">
                     {% include "_include/_navbar.html" %}

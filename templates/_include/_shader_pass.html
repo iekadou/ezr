@@ -2,6 +2,8 @@
 <div class="well" style="background-color: #fff;" id="shaderpass_{{ shaderPass.get_id }}">
     <a data-toggle="collapse" href="#shader_{{ shaderPass.get_shader.get_id }}_wrapper"><h4>{{ shaderPass.get_shader.get_name }}</h4></a>
     <div class="form-group collapse ace-wrapper" id="shader_{{ shaderPass.get_shader.get_id }}_wrapper">
+        <button class="btn btn-default" data-toggle="popover" data-placement="right" data-html="true" data-content="// uniform vec3 bla<br>// uniform vec3 bla">{% _"Available Variables" %}</button>
+        <br>
         <input type="text" class="form-control" name="name" value="{{ shaderPass.get_shader.get_name }}" style="background-color: rgb(39, 40, 34); color: #f7f7f7;">
         <label for="snippet_{{ shaderPass.get_shader.get_vertex_id }}">Vertex</label>
         <div class="resizable resizable_snippet_{{ shaderPass.get_shader.get_vertex_id }}"><div id="snippet_{{ shaderPass.get_shader.get_vertex_id }}" class="form-control ace_editor vertex" data-mode="glsl"></div></div>

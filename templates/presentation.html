@@ -1,7 +1,7 @@
 {% lare_extends "program.html" LARE_PREFIX~'.Presentation'  "__lare.html" %}
 
 {% block content %}
-<div id="content" class="container">
+<div id="content" class="container-fluid">
     <div class="row">
     <div class="col-xs-12">
 {% if site == 'hello' %}
@@ -153,6 +153,7 @@
             <li>Artistic
                 <ul>
                     <li><a href="http://souch.iekadou.com{% url 'program' '36' %}" target="_blank">Sketh Shading</a></li>
+                    <li><a href="http://souch.iekadou.com{% url 'program' '22' %}" target="_blank">Aquarell</a></li>
                 </ul>
             </li>
         </ul>
@@ -175,6 +176,30 @@
                 </ul>
             </li>
         </ul>
+{% endif %}
+{% if site == 'sources' %}
+        <strong style="font-size: 30px; font-weight: bold;">Quellen</strong>
+        <ul style="font-size: 20px; word-break: break-word;">
+            <li><a href="http://threejs.org/">http://threejs.org/</a></li>
+            <li><a href="https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences">https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences</a></li>
+            <li><a href="https://nccastaff.bournemouth.ac.uk/jmacey/MastersProjects/MSc12/Hoare/CharlotteHoare_Thesis.pdf">https://nccastaff.bournemouth.ac.uk/jmacey/MastersProjects/MSc12/Hoare/CharlotteHoare_Thesis.pdf</a></li>
+            <li><a href="http://research.microsoft.com/en-us/um/people/hoppe/hatching.pdf">http://research.microsoft.com/en-us/um/people/hoppe/hatching.pdf</a></li>
+            <li><a href="https://owncloud.uni-koblenz-landau.de/owncloud/index.php/s/O0ZOEPSoCLmmbTu/download?path=%2F&files=03_NPR.pdf">https://owncloud.uni-koblenz-landau.de/owncloud/index.php/s/O0ZOEPSoCLmmbTu/download?path=%2F&files=03_NPR.pdf</a></li>
+            <li><a href="https://www.clicktorelease.com/code/npr-shading/">https://www.clicktorelease.com/code/npr-shading/</a></li>
+            <li><a href="https://www.researchgate.net/profile/Niklas_Roeber/publication/268340371_Enhanced_Cartoon_and_Comic_Rendering/links/54887f100cf2ef3447909ce4.pdf">https://www.researchgate.net/profile/Niklas_Roeber/publication/268340371_Enhanced_Cartoon_and_Comic_Rendering/links/54887f100cf2ef3447909ce4.pdf</a></li>
+            <li><a href="http://delivery.acm.org/10.1145/2030000/2024186/a152-sitthi-amorn.pdf?ip=141.26.160.10&id=2024186&acc=ACTIVE%20SERVICE&key=2BA2C432AB83DA15%2EEDC94797CF04641B%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35&CFID=754141336&CFTOKEN=88871728&__acm__=1455826785_6cf17230739089511ebe1dd1cd1472d5">http://delivery.acm.org/10.1145/2030000/2024186/a152-sitthi-amorn.pdf?ip=141.26.160.10&id=2024186&acc=ACTIVE%20SERVICE&key=2BA2C432AB83DA15%2EEDC94797CF04641B%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35&CFID=754141336&CFTOKEN=88871728&__acm__=1455826785_6cf17230739089511ebe1dd1cd1472d5</a></li>
+            <li><a href="http://www.thomaseichhorn.de/npr-sketch-shader-vvvv/">http://www.thomaseichhorn.de/npr-sketch-shader-vvvv/</a></li>
+        </ul>
+        <br>
+        <a href="{% url 'presentation' 'thankyou' %}" class="btn btn-primary btn-lg">weiter</a>
+{% endif %}
+{% if site == 'thankyou' %}
+        <div class="text-center" style="margin-top: 100px;">
+            <strong style="font-size: 50px; font-weight: bold;">Vielen Dank</strong>
+            <br><br>
+            <strong style="font-size: 40px; font-weight: bold;">Fragen?</strong>
+        </div>
+        <input type="hidden" name="object_type" id="object_type" value="tyra"/>
 {% endif %}
     </div>
     </div>
