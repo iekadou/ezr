@@ -36,7 +36,9 @@
     <script src="/static/js/postprocessing/MaskPass.js"></script>
     <script src="/static/js/postprocessing/ShaderPass.js"></script>
     <script src="/static/js/loaders/OBJLoader.js"></script>
-
+    <script>
+        $(document).lareAlways(function() { $('.navbar-nav li').removeClass('active'); $('.navbar-nav [href="'+window.location.pathname+'"]').closest('li').addClass('active'); });
+    </script>
 </head>
 <body data-lare-namespace="{{ lare_current_namespace }}">
     {% block site %}
@@ -52,6 +54,12 @@
                     </button>
                     <a class="navbar-brand" href="/"><img src="/static/img/stfu.png"></a>
                 </div>
+                <ul class="nav navbar-nav">
+                    <li {% if site == 'hello' %}class="active"{% endif %}><a href="{% url 'presentation' 'hello' %}">{% _"Hello" %}</a></li>
+                    <li {% if site == 'general' %}class="active"{% endif %}><a href="{% url 'presentation' 'general' %}">{% _"General" %}</a></li>
+                    <li {% if site == 'shader' %}class="active"{% endif %}><a href="{% url 'presentation' 'shader' %}">{% _"Shader" %}</a></li>
+                    <li {% if site == 'remarks' %}class="active"{% endif %}><a href="{% url 'presentation' 'remarks' %}">{% _"Remarks" %}</a></li>
+                </ul>
                 <ul id="webapp-navbar" class="nav navbar-nav navbar-collapse collapse navbar-right">
                     {% include "_include/_navbar.html" %}
                 </ul>

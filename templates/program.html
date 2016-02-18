@@ -3,7 +3,7 @@
 <div id="page" style="position: relative; height: 100%;">
     <div id="editor_plane" style="height: 100%; position: relative; width: 50%; left: 0; top:0">
         <br>
-
+        {% block content %}
         <div class="container-fluid">
             <div class="row">
                 <div class="col-xs-12">
@@ -14,7 +14,7 @@
                             <option value="sphere" {% if Program.get_object_type_display == 'sphere' %}selected{% endif %}>{% _"Sphere" %}</option>
                             <option value="cube" {% if Program.get_object_type_display == 'cube' %}selected{% endif %}>{% _"Cube" %}</option>
                             <option value="teapot" {% if Program.get_object_type_display == 'teapot' %}selected{% endif %}>{% _"Teapot" %}</option>
-                            <option value="tyra" {% if Program.get_object_type_display == 'tyra' %}selected{% endif %}>{% _"Tyranosaurus" %}</option>
+                            <option value="tyra" {% if Program.get_object_type_display == 'tyra' %}selected{% endif %}>{% _"T-Rex" %}</option>
                             <option value="armadillo" {% if Program.get_object_type_display == 'armadillo' %}selected{% endif %}>{% _"Armadillo" %}</option>
                             <option value="bunny" {% if Program.get_object_type_display == 'bunny' %}selected{% endif %}>{% _"Bunny" %}</option>
                             <option value="dragon" {% if Program.get_object_type_display == 'dragon' %}selected{% endif %}>{% _"Dragon" %}</option>
@@ -93,6 +93,7 @@
                 </div>
             </div>
         </div>
+        {% endblock content %}
     </div>
     <div id="render_plane" style="height: 100%; position: fixed; width: 50%; right: 0; top:0"></div>
     <script>

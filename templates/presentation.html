@@ -1,0 +1,34 @@
+{% lare_extends "program.html" LARE_PREFIX~'.Presentation'  "__lare.html" %}
+
+{% block content %}
+<div id="content">
+    <div class="col-xs-12">
+{% if site == 'hello' %}
+        <strong style="font-size: 50px; weight: bold;">Hallo</strong>
+        <ul style="font-size: 35px;">
+            <li>Punkt 1</li>
+            <li>Punkt 2</li>
+        </ul>
+{% endif %}
+{% if site == 'general' %}
+        <strong style="font-size: 50px; weight: bold;">Allgemeines</strong>
+        <ul style="font-size: 35px;">
+            <li>Punkt 1</li>
+        </ul>
+{% endif %}
+{% if site == 'shader' %}
+        <strong style="font-size: 50px; weight: bold;">Shader</strong>
+        <ul style="font-size: 35px;">
+            <li>Punkt 1</li>
+        </ul>
+{% endif %}
+{% if site == 'remarks' %}
+        <strong style="font-size: 50px; weight: bold;">Fazit</strong>
+        <ul style="font-size: 35px;">
+            <li>Punkt 1</li>
+        </ul>
+{% endif %}
+    </div>
+</div>
+<script>$(document).lareReadyOnce(function() { initOnce(); init(); render(); });</script>
+{% endblock content %}

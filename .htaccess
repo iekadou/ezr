@@ -18,6 +18,7 @@ RewriteRule ^login/$ views/login.php [L] ###login###
 RewriteRule ^register/$ views/register.php [L] ###register###
 RewriteRule ^migrate/$ views/migrate.php [L] ###migrate###
 RewriteRule ^program/([^/\.]+)/?$ views/program.php?program_id=$1 [L] ###program###
+RewriteRule ^presentation/([^/\.]+)/?$ views/presentation.php?presentation_slug=$1 [L] ###presentation###
 
 # backend urls
 RewriteRule ^account/$ views/account/index.php [L] ###account###
