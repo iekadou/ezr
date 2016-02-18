@@ -248,8 +248,8 @@
 
             for (var i=0; i < renderPasses.length; i++) {
                 renderPasses[i].material.uniforms = uniforms;
+                //renderPasses[i].material.transparent = true;
             }
-            console.log(uniforms);
             var geometry;
             for (var i = 0; i < renderPasses.length; i++) {
                 renderPasses[i].scene = new THREE.Scene();

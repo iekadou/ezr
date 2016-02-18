@@ -57,6 +57,7 @@
                 <ul class="nav navbar-nav">
                     <li {% if site == 'hello' %}class="active"{% endif %}><a href="{% url 'presentation' 'hello' %}">{% _"Hello" %}</a></li>
                     <li {% if site == 'general' %}class="active"{% endif %}><a href="{% url 'presentation' 'general' %}">{% _"General" %}</a></li>
+                    <li {% if site == 'structure' %}class="active"{% endif %}><a href="{% url 'program' '1' %}">{% _"Aufbau" %}</a></li>
                     <li {% if site == 'shader' %}class="active"{% endif %}><a href="{% url 'presentation' 'shader' %}">{% _"Shader" %}</a></li>
                     <li {% if site == 'remarks' %}class="active"{% endif %}><a href="{% url 'presentation' 'remarks' %}">{% _"Remarks" %}</a></li>
                 </ul>

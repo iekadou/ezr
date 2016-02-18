@@ -1,34 +1,183 @@
 {% lare_extends "program.html" LARE_PREFIX~'.Presentation'  "__lare.html" %}
 
 {% block content %}
-<div id="content">
+<div id="content" class="container">
+    <div class="row">
     <div class="col-xs-12">
 {% if site == 'hello' %}
-        <strong style="font-size: 50px; weight: bold;">Hallo</strong>
-        <ul style="font-size: 35px;">
-            <li>Punkt 1</li>
-            <li>Punkt 2</li>
+        <strong style="font-size: 30px; font-weight: bold;">Hallo</strong>
+        <ul style="font-size: 20px;">
+            <li>Gruppe:
+                <ul>
+                    <li>Baudach, Wibke</li>
+                    <li>Braun, Jonas</li>
+                    <li>Sokolowski, Irina</li>
+                </ul>
+            </li>
+            <li style="margin-top: 20px;">
+                Ziel:
+                <ul>
+                    <li>Plattform mit WebGL</li>
+                    <li>Shader ohne Overhead programmieren</li>
+                    <li>NPR Shader als Samples</li>
+                </ul>
+            </li>
+            <li style="margin-top: 20px;">
+                State of the art:
+                <ul>
+                    <li>Es gibt andere Plattformen dieser Art</li>
+                    <li>Shadertoy.com (Kein leichter Zugang, kein Vertex Shader)</li>
+                    <li>Oft nur Fragment/Vertex Shader</li>
+                </ul>
+            </li>
         </ul>
 {% endif %}
 {% if site == 'general' %}
-        <strong style="font-size: 50px; weight: bold;">Allgemeines</strong>
-        <ul style="font-size: 35px;">
-            <li>Punkt 1</li>
+        <strong style="font-size: 30px; font-weight: bold;">Allgemeines</strong>
+        <ul style="font-size: 20px;">
+            <li>Platform:
+                <ul>
+                    <li>PHP 5, Mysql, jQuery, lare.js, THREE.js</li>
+                    <li>MVC Web-application, Object-Relation-Mapping</li>
+                </ul>
+            </li>
+        </ul>
+        <ul style="font-size: 20px;">
+            <li>WebGL:
+                <ul>
+                    <li>~ OpenGL 2.0 es</li>
+                    <li style="margin-top: 20px;"><span class="fa fa-check"></span> Fragment, Vertex Shader</li>
+                    <li><span class="fa fa-times"></span> Tesselation, Geometry and Compute Shader</li>
+                    <li style="margin-top: 20px;"><span class="fa fa-check"></span> (for int i=0; i < 42; i++) </li>
+                    <li><span class="fa fa-times"></span> (for int i=0; i < x; i++) // x not allowed</li>
+                    <li style="margin-top: 20px;"><span class="fa fa-check"></span>  array[42]  = 5;</li>
+                    <li><span class="fa fa-times"></span>  array[i]  = 5; // i not allowed</li>
+                </ul>
+            </li>
+        </ul>
+{% endif %}
+{% if site == 'structure' %}
+        <strong style="font-size: 30px; font-weight: bold;">Aufbau</strong>
+        <ul style="font-size: 20px;">
+            <li>Ein Programm besteht aus:
+                <ul>
+                    <li>Modell</li>
+                    <li style="margin-top: 20px;">Texturen</li>
+                    <li style="margin-top: 20px;">Init-Methode (Javascript)
+                        <ul>
+                            <li>
+                                wird vor dem ersten Frame ausgeführt
+                            </li>
+                        </ul>
+                    </li>
+                    <li style="margin-top: 20px;">Render-Methode (Javascript)
+                        <ul>
+                            <li>
+                                z.B. Animation
+                            </li>
+                            <li>
+                                wird vor jedem Frame aufgerufen
+                            </li>
+                        </ul>
+                    </li>
+                    <li style="margin-top: 20px;">Renderpasses (GLSL)
+                        <ul>
+                            <li>
+                                Rendertarget
+                            </li>
+                            <li>
+                                Vertex-Shader
+                            </li>
+                            <li>
+                                Fragment-Shader
+                            </li>
+                        </ul>
+                    </li>
+                    <li style="margin-top: 20px;">Postprocessing
+                        <ul>
+                            <li>
+                                Vertex-Shader
+                            </li>
+                            <li>
+                                Fragment-Shader
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
         </ul>
 {% endif %}
 {% if site == 'shader' %}
-        <strong style="font-size: 50px; weight: bold;">Shader</strong>
-        <ul style="font-size: 35px;">
-            <li>Punkt 1</li>
+        <strong style="font-size: 30px; font-weight: bold;">Shader</strong>
+        <ul style="font-size: 20px;">
+            <li>Cel Shading
+                <ul>
+                    <li><a href="http://souch.iekadou.com{% url 'program' '15' %}" target="_blank">Variante Normalen</a></li>
+                    <li><a href="http://souch.iekadou.com{% url 'program' '20' %}" target="_blank">Variante Normalen + Z-Werte</a></li>
+                    <li><a href="http://souch.iekadou.com{% url 'program' '9' %}" target="_blank">Variante FXAA</a></li>
+                </ul>
+            </li>
+            <li>Postprocessing
+                <ul>
+                    <li><a href="http://souch.iekadou.com{% url 'program' '26' %}" target="_blank">Texturierte Outlines und Fülltextur</a></li>
+                </ul>
+            </li>
+            <li>DOF
+                <ul>
+                    <li><a href="http://souch.iekadou.com{% url 'program' '27' %}" target="_blank">Normals + DOF</a></li>
+                </ul>
+            </li>
+            <li>Gooch
+                <ul>
+                    <li><a href="http://souch.iekadou.com{% url 'program' '14' %}" target="_blank">Mit oder ohne Beleuchtung</a></li>
+                </ul>
+            </li>
+            <li>Retro
+                <ul>
+                    <li><a href="http://souch.iekadou.com{% url 'program' '16' %}" target="_blank">Skalierbarer "Pixelator"</a></li>
+                </ul>
+            <li>Hatching
+                <ul>
+                    <li><a href="http://souch.iekadou.com{% url 'program' '13' %}" target="_blank">Renderpass oder Postprocess</a></li>
+                </ul>
+            <li>Fresnel
+                <ul>
+                    <li><a href="http://souch.iekadou.com{% url 'program' '18' %}" target="_blank">Fresnel Rim</a></li>
+                </ul>
+            </li>
+            <li>Edges
+                <ul>
+                    <li><a href="http://souch.iekadou.com{% url 'program' '32' %}" target="_blank">Sobel</a></li>
+                </ul>
+            </li>
+            <li>Artistic
+                <ul>
+                    <li><a href="http://souch.iekadou.com{% url 'program' '36' %}" target="_blank">Sketh Shading</a></li>
+                </ul>
+            </li>
         </ul>
 {% endif %}
 {% if site == 'remarks' %}
-        <strong style="font-size: 50px; weight: bold;">Fazit</strong>
-        <ul style="font-size: 35px;">
-            <li>Punkt 1</li>
+        <strong style="font-size: 30px; font-weight: bold;">Fazit</strong>
+        <ul style="font-size: 20px;">
+            <li>Mehrere Anläufe der Programmstruktur</li>
+            <li style="margin-top: 20px;">Ergebnis recht generisch</li>
+            <li style="margin-top: 20px;">Future Work
+                <ul>
+                    <li>Speichern als Datei</li>
+                    <li>Share</li>
+                    <li>(Maus/Keyboard) Interaktion</li>
+                    <li>Szene / Mehrere Objekte</li>
+                    <li>Error Reporting</li>
+                    <li>Autovervollständigung</li>
+                    <li>Rendereinstellungen (orthografisch, perspektivisch)</li>
+                    <li>Eigene Models, Szene</li>
+                </ul>
+            </li>
         </ul>
 {% endif %}
     </div>
+    </div>
 </div>
-<script>$(document).lareReadyOnce(function() { initOnce(); init(); render(); });</script>
+<script>$(document).lareReadyOnce(function() { initOnce(); init(); animate(); });</script>
 {% endblock content %}
