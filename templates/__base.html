@@ -55,12 +55,8 @@
                     <a class="navbar-brand" href="/"><img src="/static/img/stfu.png"></a>
                 </div>
                 <ul class="nav navbar-nav">
-                    <li {% if site == 'hello' %}class="active"{% endif %}><a href="{% url 'presentation' 'hello' %}">{% _"Hello" %}</a></li>
-                    <li {% if site == 'general' %}class="active"{% endif %}><a href="{% url 'presentation' 'general' %}">{% _"General" %}</a></li>
-                    <li {% if site == 'structure' %}class="active"{% endif %}><a href="{% url 'program' '1' %}">{% _"Aufbau" %}</a></li>
-                    <li {% if site == 'shader' %}class="active"{% endif %}><a href="{% url 'presentation' 'shader' %}">{% _"Shader" %}</a></li>
-                    <li {% if site == 'remarks' %}class="active"{% endif %}><a href="{% url 'presentation' 'remarks' %}">{% _"Remarks" %}</a></li>
-                    <li {% if site == 'sources' %}class="active"{% endif %}><a href="{% url 'presentation' 'sources' %}">{% _"Sources" %}</a></li>
+                    <li {% if site == 'shader' %}class="active"{% endif %}><a href="{% url 'presentation' 'shader' %}">{% _"Examples" %}</a></li>
+                    <li {% if site == 'thankyou' %}class="active"{% endif %}><a href="{% url 'presentation' 'thankyou' %}">{% _"Dino" %}</a></li>
                 </ul>
                 <ul id="webapp-navbar" class="nav navbar-nav navbar-collapse collapse navbar-right">
                     {% include "_include/_navbar.html" %}
