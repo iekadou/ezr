@@ -101,8 +101,8 @@
                 if (renderPasses[i].id !== undefined && renderPasses[i].id == $(this).attr('data-id')) {
                     renderPasses[i].material = new THREE.ShaderMaterial({
                         uniforms: {},
-                        vertexShader: snippets[$renderPass.find('.vertex').attr('id').split("snippet_")[1]],/* vertex_shader */
-                        fragmentShader: snippets[$renderPass.find('.fragment').attr('id').split("snippet_")[1]]/* fragment_shader */
+                        vertexShader: '// ERROR_SYNC_LINE\n'+snippets[$renderPass.find('.vertex').attr('id').split("snippet_")[1]],/* vertex_shader */
+                        fragmentShader: '// ERROR_SYNC_LINE\n'+snippets[$renderPass.find('.fragment').attr('id').split("snippet_")[1]]/* fragment_shader */
                     });
                     renderPasses[i].texture_name = $renderPass.find('[name="texture_name"]').val();
                 }
@@ -190,8 +190,8 @@
                     'id': data.id,
                     'material': new THREE.ShaderMaterial({
                         uniforms: {},
-                        vertexShader: snippets[data.vertex_id],/* vertex_shader */
-                        fragmentShader: snippets[data.fragment_id]/* fragment_shader */
+                        vertexShader: '// ERROR_SYNC_LINE\n'+snippets[data.vertex_id],/* vertex_shader */
+                        fragmentShader: '// ERROR_SYNC_LINE\n'+snippets[data.fragment_id]/* fragment_shader */
                     }),
                     'render_target': new THREE.WebGLRenderTarget( window.innerWidth/2, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat } ),
                     'texture_name': data.texture_name
@@ -359,7 +359,7 @@ $(document).lareAlways(function() {
 
         init();
         animate();
-    } catch (Exception) {
-
+    } catch (e) {
+        console.log(e.getMessage);
     }
 });

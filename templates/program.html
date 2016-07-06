@@ -96,6 +96,7 @@
         {% endblock content %}
     </div>
     <div id="render_plane" style="height: 100%; position: fixed; width: 50%; right: 0; top:0"></div>
+    <div id="errormessages" style="position:fixed; bottom: 0; left: 0; right:0; z-index: 10001; width: 100%; height: 100px; background-color: #333; color: #ff1d75; padding: 10px; font-weight: bold; overflow: scroll;"></div>
     <script>
         var container;
 
@@ -142,8 +143,8 @@
                     scene: new THREE.Scene(),
                     material: new THREE.ShaderMaterial({
                         uniforms: {},
-                        vertexShader: snippets[{{ renderPass.get_shader.get_vertex_id }}],/* vertex_shader */
-                        fragmentShader: snippets[{{ renderPass.get_shader.get_fragment_id }}]/* fragment_shader */
+                        vertexShader: '// ERROR_SYNC_LINE\n'+snippets[{{ renderPass.get_shader.get_vertex_id }}],/* vertex_shader */
+                        fragmentShader: '// ERROR_SYNC_LINE\n'+snippets[{{ renderPass.get_shader.get_fragment_id }}]/* fragment_shader */
                     }),
                     render_target: new THREE.WebGLRenderTarget( window.innerWidth/2, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat } ),
                     texture_name: '{{ renderPass.get_texture_name }}'
@@ -163,12 +164,12 @@
             renderPasses.push({'scene': new THREE.Scene(),
                 material: new THREE.ShaderMaterial( {
                     uniforms: {},
-                    vertexShader: ["varying vec3 vNormal;",
+                    vertexShader: '// ERROR_SYNC_LINE\n'+["varying vec3 vNormal;",
                         "void main() {",
                         "    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
                         "    vNormal = normalize( normalMatrix * normal );",
                         "}"].join('\n'),
-                    fragmentShader: ["varying vec3 vNormal;",
+                    fragmentShader: '// ERROR_SYNC_LINE\n'+["varying vec3 vNormal;",
                         "",
                         "void main() {",
                         "gl_FragColor = vec4(vNormal, 1.0 );",
@@ -181,12 +182,12 @@
             renderPasses.push({'scene': new THREE.Scene(),
                 material: new THREE.ShaderMaterial({
                     uniforms: {},
-                    vertexShader: ["varying vec4 vViewPosition;",
+                    vertexShader: '// ERROR_SYNC_LINE\n'+["varying vec4 vViewPosition;",
                         "void main() {",
                         "    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
                         "    vViewPosition = gl_Position;",
                         "}"].join('\n'),
-                    fragmentShader: ["varying vec4 vViewPosition;",
+                    fragmentShader: '// ERROR_SYNC_LINE\n'+["varying vec4 vViewPosition;",
                         "void main() {",
                         "float depth = 1.0-vViewPosition.z/vViewPosition.w;",
                         "gl_FragColor = vec4(depth, depth, depth, 1.0);",
@@ -225,85 +226,88 @@
             }, obj_loader.onProgress, obj_loader.onError );
         }
         function init() {
+            $('#errormessages').addClass('hide').html('');
+            try {
+                container = document.getElementById('render_plane');
+                container.innerHTML = '';
 
-            container = document.getElementById( 'render_plane' );
-            container.innerHTML = '';
+                /* START PROGRAM INIT PART */
+                eval(snippets[init_id]);
+                /* END PROGRAM INIT PART */
 
-            /* START PROGRAM INIT PART */
-            eval(snippets[init_id]);
-            /* END PROGRAM INIT PART */
+                uniforms.resolution = {type: "v2", value: new THREE.Vector2()};
+                uniforms.time = {type: "f", value: 1.0};
+                uniforms.tDiffuse = {type: "t", value: null};
 
-            uniforms.resolution = { type: "v2", value: new THREE.Vector2() };
-            uniforms.time = { type: "f", value: 1.0 };
-            uniforms.tDiffuse = { type: "t", value: null };
-
-            for (var i=0; i < renderPasses.length; i++) {
-                uniforms[renderPasses[i].texture_name] = { type: "t", value: renderPasses[i].render_target };
-            }
-
-            for (var i=0; i < textures.length; i++) {
-                uniforms[textures[i].texture_name] = { type: 't', value: textureLoader.load( textures[i].img ) };
-                uniforms[textures[i].texture_name].value.wrapS = uniforms[textures[i].texture_name].value.wrapT = THREE.RepeatWrapping;
-            }
-
-            for (var i=0; i < renderPasses.length; i++) {
-                renderPasses[i].material.uniforms = uniforms;
-                //renderPasses[i].material.transparent = true;
-            }
-            var geometry;
-            for (var i = 0; i < renderPasses.length; i++) {
-                renderPasses[i].scene = new THREE.Scene();
-            }
-            var geometry_selection = $('#object_type').val();
-            switch (geometry_selection) {
-                case 'sphere':
-                    geometry = new THREE.SphereGeometry( 0.5, 32, 32 );
-                    break;
-                case 'torus':
-                    geometry = new THREE.TorusKnotGeometry( 0.3, 0.1, 1000, 54 );
-                    break;
-                case 'teapot':
-                    geometry = new THREE.TeapotGeometry(0.3, 10, true, true, true, true);
-                    break;
-                case 'cube':
-                    geometry = new THREE.BoxGeometry( 1, 1, 1 );
-                    break;
-                case 'tyra':
-                    loadOBJModel('tyra', 1);
-                    break;
-                case 'armadillo':
-                    loadOBJModel('armadillo', 1);
-                    break;
-                case 'bunny':
-                    loadOBJModel('bunny', 1);
-                    break;
-                case 'dragon':
-                    loadOBJModel('dragon', 1);
-                    break;
-                default:
-                    geometry = new THREE.TorusKnotGeometry( 0.3, 0.1, 1000, 54 );
-            }
-            if (geometry_selection != 'bunny' && geometry_selection != 'tyra' && geometry_selection != 'armadillo' && geometry_selection != 'dragon') {
                 for (var i = 0; i < renderPasses.length; i++) {
-                    renderPasses[i].scene.add(new THREE.Mesh(geometry, renderPasses[i].material));
+                    uniforms[renderPasses[i].texture_name] = {type: "t", value: renderPasses[i].render_target};
                 }
+
+                for (var i = 0; i < textures.length; i++) {
+                    uniforms[textures[i].texture_name] = {type: 't', value: textureLoader.load(textures[i].img)};
+                    uniforms[textures[i].texture_name].value.wrapS = uniforms[textures[i].texture_name].value.wrapT = THREE.RepeatWrapping;
+                }
+
+                for (var i = 0; i < renderPasses.length; i++) {
+                    renderPasses[i].material.uniforms = uniforms;
+                    //renderPasses[i].material.transparent = true;
+                }
+                var geometry;
+                for (var i = 0; i < renderPasses.length; i++) {
+                    renderPasses[i].scene = new THREE.Scene();
+                }
+                var geometry_selection = $('#object_type').val();
+                switch (geometry_selection) {
+                    case 'sphere':
+                        geometry = new THREE.SphereGeometry(0.5, 32, 32);
+                        break;
+                    case 'torus':
+                        geometry = new THREE.TorusKnotGeometry(0.3, 0.1, 1000, 54);
+                        break;
+                    case 'teapot':
+                        geometry = new THREE.TeapotGeometry(0.3, 10, true, true, true, true);
+                        break;
+                    case 'cube':
+                        geometry = new THREE.BoxGeometry(1, 1, 1);
+                        break;
+                    case 'tyra':
+                        loadOBJModel('tyra', 1);
+                        break;
+                    case 'armadillo':
+                        loadOBJModel('armadillo', 1);
+                        break;
+                    case 'bunny':
+                        loadOBJModel('bunny', 1);
+                        break;
+                    case 'dragon':
+                        loadOBJModel('dragon', 1);
+                        break;
+                    default:
+                        geometry = new THREE.TorusKnotGeometry(0.3, 0.1, 1000, 54);
+                }
+                if (geometry_selection != 'bunny' && geometry_selection != 'tyra' && geometry_selection != 'armadillo' && geometry_selection != 'dragon') {
+                    for (var i = 0; i < renderPasses.length; i++) {
+                        renderPasses[i].scene.add(new THREE.Mesh(geometry, renderPasses[i].material));
+                    }
+                }
+
+                renderer = new THREE.WebGLRenderer({logarithmicDepthBuffer: true});
+                renderer.setPixelRatio((window.innerWidth / 2) / window.innerHeight);
+                renderer.setClearColor(0x000000, 1);
+                renderer.setSize(window.innerWidth / 2, window.innerHeight);
+                container.appendChild(renderer.domElement);
+
+                onWindowResize();
+                Webapp.register_popovers();
+
+                window.addEventListener('resize', onWindowResize, false);
+            } catch(e) {
+                var stacktrace = e.stack.split("\n");
+                $('#errormessages').removeClass('hide').prepend('In init method: '+ stacktrace[0]+'<br>');
             }
-
-            renderer = new THREE.WebGLRenderer({logarithmicDepthBuffer: true });
-            renderer.setPixelRatio( (window.innerWidth/2) / window.innerHeight );
-            renderer.setClearColor( 0x000000, 1);
-            renderer.setSize( window.innerWidth/2, window.innerHeight );
-            container.appendChild( renderer.domElement );
-
-            onWindowResize();
-            Webapp.register_popovers();
-
-            window.addEventListener( 'resize', onWindowResize, false );
-
         }
 
         function onWindowResize( event ) {
-
             uniforms.resolution.value.x = window.innerWidth/2;
             uniforms.resolution.value.y = window.innerHeight;
 
@@ -318,7 +322,7 @@
             composer = new THREE.EffectComposer( renderer );
             composer.addPass( new THREE.RenderPass( renderPasses[0].scene, camera ) );
             for (var i = 0; i < shaderPasses.length; i++) {
-                var shaderpass = new THREE.ShaderPass({ uniforms: uniforms, vertexShader: snippets[shaderPasses[i].vertex_id], fragmentShader: snippets[shaderPasses[i].fragment_id] });
+                var shaderpass = new THREE.ShaderPass({ uniforms: uniforms, vertexShader: '// ERROR_SYNC_LINE\n'+snippets[shaderPasses[i].vertex_id], fragmentShader: '// ERROR_SYNC_LINE\n'+snippets[shaderPasses[i].fragment_id] });
                 for (var x=0; x < textures.length; x++) {
                     shaderpass.material.uniforms[textures[x].texture_name] = { type: 't', value: textureLoader.load( textures[x].img ) };
                     shaderpass.material.uniforms[textures[x].texture_name].value.wrapS = shaderpass.material.uniforms[textures[x].texture_name].value.wrapT = THREE.RepeatWrapping;
@@ -328,7 +332,6 @@
             var effect = new THREE.ShaderPass( THREE.CopyShader );
             effect.renderToScreen = true;
             composer.addPass( effect );
-
         }
 
         function animate() {
@@ -345,16 +348,23 @@
             uniforms.time.value += delta * 5;
 
             /* START PROGRAM RENDER PART */
-            eval(snippets[render_id]);
-            /* END PROGRAM RENDER PART */
-
-            for (var i=0; i < renderPasses.length; i++) {
-                renderer.render( renderPasses[i].scene, camera, renderPasses[i].render_target, true );
+            var render_valid = true;
+            try {
+                eval(snippets[render_id]);
+            } catch(e) {
+                render_valid = false;
+                var stacktrace = e.stack.split("\n");
+                $('#errormessages').removeClass('hide').prepend('Error in render method: '+stacktrace[0]+'<br>');
             }
+            /* END PROGRAM RENDER PART */
+            if (render_valid) {
+                for (var i=0; i < renderPasses.length; i++) {
+                    renderer.render( renderPasses[i].scene, camera, renderPasses[i].render_target, true );
+                }
 
-            composer.render();
+                composer.render();
+            }
         }
-
     </script>
 </div>
 {% endblock page %}
